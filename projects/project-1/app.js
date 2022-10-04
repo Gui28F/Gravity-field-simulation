@@ -48,7 +48,7 @@ function main(shaders)
     });
 
     window.addEventListener("keydown", function(event) {
-        console.log(event.key);
+        //console.log(event.key);
         switch(event.key) {
             case "PageUp":
                 break;
@@ -86,7 +86,7 @@ function main(shaders)
     canvas.addEventListener("mousemove", function(event) {
         const p = getCursorPosition(canvas, event);
 
-        console.log(p);
+        //console.log(p);
     });
 
     canvas.addEventListener("mouseup", function(event) {
@@ -122,16 +122,18 @@ function main(shaders)
 
         for(let i=0; i<nParticles; ++i) {
             // position
-            const x = Math.random()-0.5;
-            const y = Math.random()-0.5;
-
+           // const x = Math.random()-0.5;
+            //const y = Math.random()-0.5;
+            const x = 0; 
+            const y = 0;
+        
             data.push(x); data.push(y);
             
             // age
             data.push(0.0);
 
             // life
-            const life = 6.0 + Math.random();
+            const life = Math.random() * (7 - 2 + 1) + 2;
             data.push(life);
 
             // velocity
@@ -156,7 +158,6 @@ function main(shaders)
     function animate(timestamp)
     {
         let deltaTime = 0;
-
         if(time === undefined) {        // First time
             time = timestamp/1000;
             deltaTime = 0;
@@ -170,7 +171,17 @@ function main(shaders)
 
         // Clear framebuffer
         gl.clear(gl.COLOR_BUFFER_BIT);
-
+        gl.useProgram(updateProgram);
+        const uStartPoint = gl.getUniformLocation(updateProgram, "uStartPoint");
+        gl.uniform2f(uStartPoint, 0.0, 0.0);
+        const uMinAngle = gl.getUniformLocation(updateProgram, "uMinAngle");
+        gl.uniform1f(uMinAngle, 0.79);
+        const uMaxAngle = gl.getUniformLocation(updateProgram, "uMaxAngle");
+        gl.uniform1f(uMaxAngle, 2.37);
+        const uMinSpeed = gl.getUniformLocation(updateProgram, "uMinSpeed");
+        gl.uniform1f(uMinSpeed, 0.1);
+        const uMaxSpeed = gl.getUniformLocation(updateProgram, "uMaxSpeed");
+        gl.uniform1f(uMaxSpeed,0.3);
         if(drawField) drawQuad();
         updateParticles(deltaTime);
         if(drawPoints) drawParticles(outParticlesBuffer, N_PARTICLES);
@@ -237,9 +248,8 @@ function main(shaders)
 
     function drawParticles(buffer, nParticles)
     {
-
+   
         gl.useProgram(renderProgram);
-
         // Setup attributes
         const vPosition = gl.getAttribLocation(renderProgram, "vPosition");
 
@@ -249,6 +259,7 @@ function main(shaders)
         gl.enableVertexAttribArray(vPosition);
 
         gl.drawArrays(gl.POINTS, 0, nParticles);
+
     }
 }
 

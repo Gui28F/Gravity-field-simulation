@@ -3,7 +3,12 @@ precision mediump float;
 /* Number of seconds (possibly fractional) that has passed since the last
    update step. */
 uniform float uDeltaTime;
-
+uniform vec2 uForce;
+uniform vec2 uStartPoint;
+uniform float uMinAngle;
+uniform float uMaxAngle;
+uniform float uMinSpeed;
+uniform float uMaxSpeed;
 /* Inputs. These reflect the state of a single particle before the update. */
 
 
@@ -29,18 +34,23 @@ highp float rand(vec2 co)
     return fract(sin(sn) * c);
 }
 
+
 void main() {
-
-   /* Update parameters according to our simple rules.*/
-   vPositionOut = vPosition + vVelocity * uDeltaTime;
-   vAgeOut = vAge + uDeltaTime;
-   vLifeOut = vLife;
-
-   vec2 accel = vec2(0.0);
-   vVelocityOut = vVelocity + accel * uDeltaTime;
-      
-   if (vAgeOut >= vLife) {
+    /* Update parameters according to our simple rules.*/
+      vPositionOut = vPosition + vVelocity * uDeltaTime;
+      vLifeOut = vLife;
+      vec2 accel = vec2(0.0);
+      vVelocityOut = vVelocity + accel * uDeltaTime;
+      vAgeOut = vAge + uDeltaTime;
+   if (vAgeOut >= vLife || vAgeOut == 0.) {
       // It's all up to you!
+      float angle = uMinAngle + rand(vec2(vLife, vLife*2.))*(uMaxAngle - uMinAngle);
+      float x = cos(angle);
+      float y = sin(angle);
+      vPositionOut = uStartPoint;
+      vAgeOut = .0;
+      vLifeOut = vLife;
+      vVelocityOut = vec2(x, y) * (rand(vec2(vLife*2., vLife*4.)) * (uMaxSpeed - uMinSpeed));
    }
 
 }
