@@ -4,7 +4,7 @@ precision mediump float;
    update step. */
 uniform float uDeltaTime;
 uniform vec2 uForce;
-uniform vec2 uStartPoint;
+varying vec2 uStartPoint;
 uniform float uMinAngle;
 uniform float uMaxAngle;
 uniform float uMinSpeed;
@@ -36,6 +36,8 @@ highp float rand(vec2 co)
 
 
 void main() {
+   if(vAgeOut == 0.)
+      uStartPoint = vPosition;
     /* Update parameters according to our simple rules.*/
       vPositionOut = vPosition + vVelocity * uDeltaTime;
       vLifeOut = vLife;

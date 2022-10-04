@@ -121,9 +121,9 @@ function main(shaders)
         const data = [];
 
         for(let i=0; i<nParticles; ++i) {
-            // position
+            //position
            // const x = Math.random()-0.5;
-            //const y = Math.random()-0.5;
+           // const y = Math.random()-0.5;
             const x = 0; 
             const y = 0;
         
@@ -172,8 +172,6 @@ function main(shaders)
         // Clear framebuffer
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.useProgram(updateProgram);
-        const uStartPoint = gl.getUniformLocation(updateProgram, "uStartPoint");
-        gl.uniform2f(uStartPoint, 0.0, 0.0);
         const uMinAngle = gl.getUniformLocation(updateProgram, "uMinAngle");
         gl.uniform1f(uMinAngle, 0.79);
         const uMaxAngle = gl.getUniformLocation(updateProgram, "uMaxAngle");
