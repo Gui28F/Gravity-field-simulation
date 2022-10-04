@@ -12,6 +12,8 @@ const N_PARTICLES = 1000;
 let drawPoints = true;
 let drawField = true;
 
+let x = undefined;
+let y = undefined;
 let time = undefined;
 
 function main(shaders)
@@ -99,8 +101,8 @@ function main(shaders)
         const mx = event.offsetX;
         const my = event.offsetY;
 
-        const x = ((mx / canvas.width * 2) - 1);
-        const y = (((canvas.height - my)/canvas.height * 2) -1);
+        x = ((mx / canvas.width * 2) - 1);
+        y = (((canvas.height - my)/canvas.height * 2) -1);
 
         return vec2(x,y);
     }
@@ -172,6 +174,8 @@ function main(shaders)
         // Clear framebuffer
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.useProgram(updateProgram);
+        const uStartPoint = gl.getUniformLocation(updateProgram, "uStartPoint");
+        gl.uniform2f(uStartPoint, x, y);
         const uMinAngle = gl.getUniformLocation(updateProgram, "uMinAngle");
         gl.uniform1f(uMinAngle, 0.79);
         const uMaxAngle = gl.getUniformLocation(updateProgram, "uMaxAngle");
