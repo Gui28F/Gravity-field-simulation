@@ -1,6 +1,10 @@
 precision highp float;
+varying vec3 vPositionOut;
 
-void main() {
-    
-    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+varying float fOpacity;
+varying vec3 fColor;
+void main()
+{
+    gl_FragColor = vec4(fColor,fOpacity);
+
 }
