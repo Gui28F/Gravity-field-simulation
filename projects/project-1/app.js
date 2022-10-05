@@ -18,7 +18,7 @@ let time = undefined;
 let uniStatus = {
     currMinLife: 2, minLife: 2, minLifeLim: [1, 19], currMaxLife: 10, maxLife: 10,
     minLifeLim: [2, 20], startPos: [0, 0], currVMin: 0.1, vMin: 0.1, currVMax: 0.2, vMax: 0.2,
-    currAngle: Math.PI, startAngle: Math.PI, varAngle: [-Math.PI, Math.PI]
+    currAngle: Math.PI, currMaxAngle: Math.PI, varAngle: [-Math.PI, Math.PI]
 };
 
 function main(shaders) {
@@ -62,13 +62,24 @@ function main(shaders) {
         gl.useProgram(updateProgram);
         let uMinSpeed = gl.getUniformLocation(updateProgram, "uMinSpeed");
         let uMaxSpeed = gl.getUniformLocation(updateProgram, "uMaxSpeed");
+        let uMaxAngle = gl.getUniformLocation(updateProgram, "uMaxAngle");
+        const uStartPoint = gl.getUniformLocation(updateProgram, "uStartPoint");
         console.log(uniStatus.currVMin, uniStatus.currVMax)
 
 
         switch (event.key) {
             case "ArrowUp":
+                if(uniStatus.varAngle[0] <= uniStatus.currMaxAngle + 0.1 && uniStatus.varAngle[1] >= uniStatus.currMaxAngle + 0.1 ){
+                uniStatus.currMaxAngle += 0.1;
+                gl.uniform1f(uMaxAngle, uniStatus.currMaxAngle);
+                }
                 break;
             case "ArrowDown":
+                if(uniStatus.varAngle[0] <= uniStatus.currMaxAngle - 0.1 && uniStatus.varAngle[1] >= uniStatus.currMaxAngle - 0.1 ){
+                uniStatus.currMaxAngle -= 0.1;
+                gl.uniform1f(uMaxAngle, uniStatus.currMaxAngle);
+               }
+                console.log(uniStatus.currMaxAngle);
                 break;
             case "ArrowLeft":
                 break;
@@ -98,7 +109,7 @@ function main(shaders) {
                 window.addEventListener("mousemove", function (event) {
                     if (event.shiftKey) {
                         const p = getCursorPosition(canvas, event);
-                        const uStartPoint = gl.getUniformLocation(updateProgram, "uStartPoint");
+                        gl.useProgram(updateProgram);
                         gl.uniform2f(uStartPoint, p[0], p[1]);
                     }
                     //console.log(p);
@@ -181,11 +192,11 @@ function main(shaders) {
             // life
             const life = Math.random() * (10 - 2 + 1) + 2;
             data.push(life);
-            gl.useProgram(updateProgram)
+           /* gl.useProgram(updateProgram)
             let uMinLife = gl.getUniformLocation(updateProgram, "uMinLife");
             gl.uniform1f(uMinLife, life);
             let uMaxLife = gl.getUniformLocation(updateProgram, "uMinLife");
-            gl.uniform1f(uMaxLife, life);
+            gl.uniform1f(uMaxLife, life);*/
             // velocity
             data.push(0.1 * (Math.random() - 0.5));
             data.push(0.1 * (Math.random() - 0.5));
@@ -331,8 +342,8 @@ function main(shaders) {
         gl.drawArrays(gl.POINTS, 0, nParticles);
 
     }
-    drawPlanet(0.3, 0, 0.2);
-    drawPlanet(0., 0, 0.2);
+    //drawPlanet(0.3, 0, 0.2);
+    drawPlanet(0., 0., 0.2);
 }
 
 

@@ -73,7 +73,7 @@ void main() {
       vPositionOut = uStartPoint;
       vAgeOut = .0;
       vLifeOut = vLife;
-      vVelocityOut = vec2(x, y) * (vec2(uMinSpeed, uMaxSpeed));
+      vVelocityOut = vec2(x, y/2.) * (vec2(uMinSpeed, uMaxSpeed));
    }
 
 }

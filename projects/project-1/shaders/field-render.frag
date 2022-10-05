@@ -32,6 +32,7 @@ vec3 color(){
 }
 float opacity(){
     vec2 f = force();
+    float dir = atan(f.y, f.x) + 2. * PI;
     float mf = clamp(length(f)/RE, 0.0, 1.0);
     return mf;
 }
