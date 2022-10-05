@@ -47,11 +47,13 @@ vec2 force(){
    vec2 force = vec2(0.,0.);
   
    for(int i = 0; i < MAX_PLANETS; i++){
+      if(uRadius[i] != 0.){
         vec2 pos = vPosition.xy;
         vec2 d = normalize(uPosition[i] - pos);
         float m = 4. * PI * pow(uRadius[i] * RE,3.)/3. * rho;
-        float f = G * m/pow(length(d*RE),2.);
-        force += f * d;
+        float f = G * m/pow(length(uPosition[i] - pos)*RE,2.);
+        force += f * d ;
+      }
    }
     return force;
 }
@@ -61,7 +63,7 @@ void main() {
     /* Update parameters according to our simple rules.*/
       vPositionOut = vPosition + vVelocity * uDeltaTime;
       vLifeOut = vLife;
-      vec2 accel = vec2(0.,0.);
+      vec2 accel = force();
       vVelocityOut = vVelocity + accel * uDeltaTime;
       vAgeOut = vAge + uDeltaTime;
    
@@ -73,7 +75,7 @@ void main() {
       vPositionOut = uStartPoint;
       vAgeOut = .0;
       vLifeOut = vLife;
-      vVelocityOut = vec2(x, y/2.) * (vec2(uMinSpeed, uMaxSpeed));
+      vVelocityOut = vec2(x, y) * (vec2(uMinSpeed, uMaxSpeed));
    }
 
 }

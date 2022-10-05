@@ -12,16 +12,18 @@ uniform vec2 uPosition[MAX_PLANETS];
 
 vec2 force(){
    vec2 force = vec2(0.,0.);
-  
    for(int i = 0; i < MAX_PLANETS; i++){
-        vec2 pos = (gl_FragCoord.xy/canvasSize) * 2. - 1.;
-        vec2 d = normalize(uPosition[i]*RE - pos*RE);
-        float m = 4. * PI * pow(uRadius[i] * RE,3.)/3. * rho;
-        float f = G * m/pow(length(d),2.);
-        force += f * d;
+        if(uRadius[i] != 0.){
+            vec2 pos = (gl_FragCoord.xy/canvasSize) * 2. - 1.;
+            vec2 d = normalize(uPosition[i]- pos);
+            float m = 4. * PI * pow(uRadius[i] * RE,3.)/3. * rho;
+            float f = G * m/pow(length(uPosition[i]- pos)*RE,2.);
+            force += f * d;
+        }
    }
     return force;
 }
+
 vec3 color(){
     vec2 f = force();
     float dir = atan(f.x, f.y) + 2. * PI;//[-PI, PI]
@@ -30,10 +32,10 @@ vec3 color(){
     float b = sin(dir + 4. * PI/3.)* 120. / 255. + 90. / 255.;
     return vec3 (r,g,b);
 }
+
 float opacity(){
     vec2 f = force();
-    float dir = atan(f.y, f.x) + 2. * PI;
-    float mf = clamp(length(f)/RE, 0.0, 1.0);
+    float mf = clamp(length(f), 0.0, 1.0);
     return mf;
 }
 

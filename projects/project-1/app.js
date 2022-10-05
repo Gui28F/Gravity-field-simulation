@@ -7,7 +7,7 @@ let inParticlesBuffer, outParticlesBuffer, quadBuffer;
 // Particle system constants
 
 // Total number of particles
-const N_PARTICLES = 1000;
+const N_PARTICLES = 10000;
 
 let drawPoints = true;
 let drawField = true;
@@ -54,6 +54,7 @@ function main(shaders) {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         gl.viewport(0, 0, canvas.width, canvas.height);
+        gl.uniform2fv(canvasSize, vec2(canvas.width, canvas.height));
     });
 
 
@@ -230,7 +231,7 @@ function main(shaders) {
 
 
     function animate(timestamp) {
-
+        
 
         let deltaTime = 0;
         if (time === undefined) {        // First time
@@ -343,7 +344,7 @@ function main(shaders) {
 
     }
     //drawPlanet(0.3, 0, 0.2);
-    drawPlanet(0., 0., 0.2);
+    drawPlanet(0., 0.0, 0.2);
 }
 
 
