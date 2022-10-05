@@ -18,7 +18,7 @@ uniform float uMaxAngle;
 uniform float uMinSpeed;
 uniform float uMaxSpeed;
 /* Inputs. These reflect the state of a single particle before the update. */
-
+uniform float uLife;
 
 attribute vec2 vPosition;              // actual position
 attribute float vAge;                  // actual age (in seconds)
@@ -61,19 +61,19 @@ void main() {
     /* Update parameters according to our simple rules.*/
       vPositionOut = vPosition + vVelocity * uDeltaTime;
       vLifeOut = vLife;
-      vec2 accel = force();
+      vec2 accel = vec2(0.,0.);
       vVelocityOut = vVelocity + accel * uDeltaTime;
       vAgeOut = vAge + uDeltaTime;
    
    if (vAgeOut >= vLife ) {
       // It's all up to you!
-      float angle = uMinAngle + rand(vec2(vLife, vLife*2.))*(uMaxAngle - uMinAngle);
+      float angle = uMinAngle + rand(vec2(vLifeOut, vLifeOut*2.))*(uMaxAngle - uMinAngle);
       float x = cos(angle);
       float y = sin(angle);
       vPositionOut = uStartPoint;
       vAgeOut = .0;
       vLifeOut = vLife;
-      vVelocityOut = vec2(x, y) * (rand(vec2(vLife*2., vLife*4.)) * (uMaxSpeed - uMinSpeed));
+      vVelocityOut = vec2(x, y) * (vec2(uMinSpeed, uMaxSpeed));
    }
 
 }

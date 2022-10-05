@@ -15,6 +15,12 @@ let drawField = true;
 
 let time = undefined;
 
+let uniStatus = {
+    currMinLife: 2, minLife: 2, minLifeLim: [1, 19], currMaxLife: 10, maxLife: 10,
+    minLifeLim: [2, 20], startPos: [0, 0], currVMin: 0.1, vMin: 0.1, currVMax: 0.2, vMax: 0.2,
+    currAngle: Math.PI, startAngle: Math.PI, varAngle: [-Math.PI, Math.PI]
+};
+
 function main(shaders) {
     // Generate the canvas element to fill the entire page
     const canvas = document.createElement("canvas");
@@ -50,13 +56,16 @@ function main(shaders) {
         gl.viewport(0, 0, canvas.width, canvas.height);
     });
 
+
     window.addEventListener("keydown", function (event) {
         //console.log(event.key);
+        gl.useProgram(updateProgram);
+        let uMinSpeed = gl.getUniformLocation(updateProgram, "uMinSpeed");
+        let uMaxSpeed = gl.getUniformLocation(updateProgram, "uMaxSpeed");
+        console.log(uniStatus.currVMin, uniStatus.currVMax)
+
+
         switch (event.key) {
-            case "PageUp":
-                break;
-            case "PageDown":
-                break;
             case "ArrowUp":
                 break;
             case "ArrowDown":
@@ -66,8 +75,14 @@ function main(shaders) {
             case "ArrowRight":
                 break;
             case 'q':
+                // gl.useProgram(updateProgram);
+                //gl.uniform1f(uMinLife, uniStatus.currMinLife++);
+
                 break;
             case 'a':
+                // gl.useProgram(updateProgram);
+                // gl.uniform1f(uMinLife, uniStatus.currMinLife--);
+                // console.log(uMinLife)
                 break;
             case 'w':
                 break;
@@ -80,18 +95,39 @@ function main(shaders) {
                 drawPoints = !drawPoints;
                 break;
             case 'Shift':
-                canvas.addEventListener("mousemove", function (event) {
+                window.addEventListener("mousemove", function (event) {
                     if (event.shiftKey) {
                         const p = getCursorPosition(canvas, event);
-                        gl.useProgram(updateProgram);
                         const uStartPoint = gl.getUniformLocation(updateProgram, "uStartPoint");
                         gl.uniform2f(uStartPoint, p[0], p[1]);
                     }
                     //console.log(p);
                 });
-
-
+                break;
+            case 'm':
+                if (uniStatus.currVMin + 0.1 <= uniStatus.currVMax) {
+                    uniStatus.currVMin += 0.1;
+                    gl.uniform1f(uMinSpeed, uniStatus.currVMin);
+                }
+                break;
+            case 'n':
+                if (uniStatus.currVMin - 0.1 >= uniStatus.vMin) {
+                    uniStatus.currVMin -= 0.1;
+                    gl.uniform1f(uMinSpeed, uniStatus.currVMin);
+                }
+                break;
+            case "PageUp":
+                uniStatus.currVMax += 0.1
+                gl.uniform1f(uMaxSpeed, uniStatus.currVMax);
+                break;
+            case "PageDown":
+                if (uniStatus.currVMax - 0.1 >= uniStatus.currVMin) {
+                    uniStatus.currVMax -= 0.1
+                    gl.uniform1f(uMaxSpeed, uniStatus.currVMax);
+                }
+                break;
         }
+
     })
 
     canvas.addEventListener("mousedown", function (event) {
@@ -135,22 +171,26 @@ function main(shaders) {
             //position
             // const x = Math.random()-0.5;
             // const y = Math.random()-0.5;
-            const x = 0;
-            const y = 0;
 
-            data.push(x); data.push(y);
+
+            data.push(uniStatus.startPos[0]); data.push(uniStatus.startPos[1]);
 
             // age
             data.push(0.0);
 
             // life
-            const life = Math.random() * (7 - 2 + 1) + 2;
+            const life = Math.random() * (10 - 2 + 1) + 2;
             data.push(life);
-
+            gl.useProgram(updateProgram)
+            let uMinLife = gl.getUniformLocation(updateProgram, "uMinLife");
+            gl.uniform1f(uMinLife, life);
+            let uMaxLife = gl.getUniformLocation(updateProgram, "uMinLife");
+            gl.uniform1f(uMaxLife, life);
             // velocity
             data.push(0.1 * (Math.random() - 0.5));
             data.push(0.1 * (Math.random() - 0.5));
         }
+
 
         inParticlesBuffer = gl.createBuffer();
         outParticlesBuffer = gl.createBuffer();
@@ -171,7 +211,7 @@ function main(shaders) {
         const uMinSpeed = gl.getUniformLocation(updateProgram, "uMinSpeed");
         gl.uniform1f(uMinSpeed, 0.1);
         const uMaxSpeed = gl.getUniformLocation(updateProgram, "uMaxSpeed");
-        gl.uniform1f(uMaxSpeed, 0.3);
+        gl.uniform1f(uMaxSpeed, 0.2);
     }
     function drawPlanet(x, y, radius) {
         planets.push(vec3(x, y, radius))
@@ -214,7 +254,7 @@ function main(shaders) {
         for (let i = 0; i < planets.length; i++) {
             const uPosition = gl.getUniformLocation(updateProgram, "uPosition[" + i + "]");
             const uRadius = gl.getUniformLocation(updateProgram, "uRadius[" + i + "]");
-           
+
             gl.uniform2fv(uPosition, vec2(planets[i][0], planets[i][1]));
             gl.uniform1f(uRadius, planets[i][2]);
         }
@@ -245,6 +285,8 @@ function main(shaders) {
         gl.endTransformFeedback();
         gl.disable(gl.RASTERIZER_DISCARD);
         gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, null);
+        const uLife = gl.getUniformLocation(updateProgram, "uLife");
+        gl.uniform1f(uLife, 0);
     }
 
     function swapParticlesBuffers() {
@@ -256,11 +298,11 @@ function main(shaders) {
     function drawQuad() {
 
         gl.useProgram(fieldProgram);
-        
+
         for (let i = 0; i < planets.length; i++) {
             const uPosition = gl.getUniformLocation(fieldProgram, "uPosition[" + i + "]");
             const uRadius = gl.getUniformLocation(fieldProgram, "uRadius[" + i + "]");
-           
+
             gl.uniform2fv(uPosition, vec2(planets[i][0], planets[i][1]));
             gl.uniform1f(uRadius, planets[i][2]);
         }
@@ -277,7 +319,7 @@ function main(shaders) {
     function drawParticles(buffer, nParticles) {
 
         gl.useProgram(renderProgram);
-        
+
         // Setup attributes
         const vPosition = gl.getAttribLocation(renderProgram, "vPosition");
 
