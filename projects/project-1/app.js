@@ -17,7 +17,7 @@ let time = undefined;
 
 let uniStatus = {
     currMinLife: 2, minLife: 2, minLifeLim: [1, 19], currMaxLife: 10, maxLife: 10,
-    minLifeLim: [2, 20], startPos: [0, 0], currVMin: 0.1, vMin: 0.1, currVMax: 0.2, vMax: 0.2,
+    maxLifeLim: [2, 20], startPos: [0, 0], currVMin: 0.1, vMin: 0.1, currVMax: 0.2, vMax: 0.2,
     currAngle: Math.PI, currMaxAngle: Math.PI, varAngle: [-Math.PI, Math.PI]
 };
 
@@ -64,22 +64,22 @@ function main(shaders) {
         let uMinSpeed = gl.getUniformLocation(updateProgram, "uMinSpeed");
         let uMaxSpeed = gl.getUniformLocation(updateProgram, "uMaxSpeed");
         let uMaxAngle = gl.getUniformLocation(updateProgram, "uMaxAngle");
+        let uLife = gl.getUniformLocation(updateProgram, "uLife");
         const uStartPoint = gl.getUniformLocation(updateProgram, "uStartPoint");
-        console.log(uniStatus.currVMin, uniStatus.currVMax)
 
 
         switch (event.key) {
             case "ArrowUp":
-                if(uniStatus.varAngle[0] <= uniStatus.currMaxAngle + 0.1 && uniStatus.varAngle[1] >= uniStatus.currMaxAngle + 0.1 ){
-                uniStatus.currMaxAngle += 0.1;
-                gl.uniform1f(uMaxAngle, uniStatus.currMaxAngle);
+                if (uniStatus.varAngle[0] <= uniStatus.currMaxAngle + 0.1 && uniStatus.varAngle[1] >= uniStatus.currMaxAngle + 0.1) {
+                    uniStatus.currMaxAngle += 0.1;
+                    gl.uniform1f(uMaxAngle, uniStatus.currMaxAngle);
                 }
                 break;
             case "ArrowDown":
-                if(uniStatus.varAngle[0] <= uniStatus.currMaxAngle - 0.1 && uniStatus.varAngle[1] >= uniStatus.currMaxAngle - 0.1 ){
-                uniStatus.currMaxAngle -= 0.1;
-                gl.uniform1f(uMaxAngle, uniStatus.currMaxAngle);
-               }
+                if (uniStatus.varAngle[0] <= uniStatus.currMaxAngle - 0.1 && uniStatus.varAngle[1] >= uniStatus.currMaxAngle - 0.1) {
+                    uniStatus.currMaxAngle -= 0.1;
+                    gl.uniform1f(uMaxAngle, uniStatus.currMaxAngle);
+                }
                 console.log(uniStatus.currMaxAngle);
                 break;
             case "ArrowLeft":
@@ -87,18 +87,37 @@ function main(shaders) {
             case "ArrowRight":
                 break;
             case 'q':
-                // gl.useProgram(updateProgram);
-                //gl.uniform1f(uMinLife, uniStatus.currMinLife++);
-
+                if (uniStatus.currMinLife + 1 <= uniStatus.minLifeLim[1]) {
+                    uniStatus.currMinLife++;
+                    console.log(uniStatus.currMinLife);
+                    let life = Math.random() * (uniStatus.currMaxLife - uniStatus.currMinLife + 1) + 2;
+                    gl.uniform1f(uLife, life);
+                }
                 break;
             case 'a':
-                // gl.useProgram(updateProgram);
-                // gl.uniform1f(uMinLife, uniStatus.currMinLife--);
-                // console.log(uMinLife)
+                if (uniStatus.currMinLife - 1 >= uniStatus.minLifeLim[0]) {
+                    uniStatus.currMinLife--;
+                    console.log(uniStatus.currMinLife);
+                    let life = Math.random() * (uniStatus.currMaxLife - uniStatus.currMinLife + 1) + 2;
+                    gl.uniform1f(uLife, life);
+                }
                 break;
             case 'w':
+                if (uniStatus.currMaxLife + 1 <= uniStatus.maxLifeLim[1]) {
+                    uniStatus.currMaxLife++;
+                    console.log(uniStatus.currMaxLife);
+                    let life = Math.random() * (uniStatus.currMaxLife - uniStatus.currMinLife + 1) + 2;
+                    gl.uniform1f(uLife, life);
+                }
                 break;
             case 's':
+                if (uniStatus.currMaxLife - 1 >= uniStatus.maxLifeLim[0]) {
+                    uniStatus.currMaxLife--;
+                    console.log(uniStatus.currMaxLife);
+                    let life = Math.random() * (uniStatus.currMaxLife - uniStatus.currMinLife + 1) + 2;
+                    gl.uniform1f(uLife, life);
+                    console.log(life);
+                }
                 break;
             case '0':
                 drawField = !drawField;
@@ -116,26 +135,32 @@ function main(shaders) {
                     //console.log(p);
                 });
                 break;
-            case 'm':
-                if (uniStatus.currVMin + 0.1 <= uniStatus.currVMax) {
-                    uniStatus.currVMin += 0.1;
-                    gl.uniform1f(uMinSpeed, uniStatus.currVMin);
-                }
-                break;
-            case 'n':
-                if (uniStatus.currVMin - 0.1 >= uniStatus.vMin) {
-                    uniStatus.currVMin -= 0.1;
-                    gl.uniform1f(uMinSpeed, uniStatus.currVMin);
-                }
-                break;
             case "PageUp":
-                uniStatus.currVMax += 0.1
-                gl.uniform1f(uMaxSpeed, uniStatus.currVMax);
+                if (event.shiftKey) {
+                    if (uniStatus.currVMax + 0.1 <= uniStatus.currVMax) {
+                        uniStatus.currVMax += 0.1;
+                        gl.uniform1f(uMinSpeed, uniStatus.currVMax);
+                    }
+                    console.log(uniStatus.currVMax);
+                }
+                else {
+                    console.log(event);
+                    uniStatus.currVMax += 0.1
+                    gl.uniform1f(uMaxSpeed, uniStatus.currVMax);
+                }
                 break;
             case "PageDown":
-                if (uniStatus.currVMax - 0.1 >= uniStatus.currVMin) {
-                    uniStatus.currVMax -= 0.1
-                    gl.uniform1f(uMaxSpeed, uniStatus.currVMax);
+                if (event.shiftKey) {
+                    if (uniStatus.currVMin - 0.1 >= uniStatus.vMin) {
+                        uniStatus.currVMin -= 0.1;
+                        gl.uniform1f(uMinSpeed, uniStatus.currVMin);
+                    }
+                }
+                else {
+                    if (uniStatus.currVMax - 0.1 >= uniStatus.currVMin) {
+                        uniStatus.currVMax -= 0.1
+                        gl.uniform1f(uMaxSpeed, uniStatus.currVMax);
+                    }
                 }
                 break;
         }
@@ -191,16 +216,16 @@ function main(shaders) {
             data.push(0.0);
 
             // life
-            const life = Math.random() * (10 - 2 + 1) + 2;
+            const life = Math.random() *6;
             data.push(life);
-           /* gl.useProgram(updateProgram)
-            let uMinLife = gl.getUniformLocation(updateProgram, "uMinLife");
-            gl.uniform1f(uMinLife, life);
-            let uMaxLife = gl.getUniformLocation(updateProgram, "uMinLife");
-            gl.uniform1f(uMaxLife, life);*/
+            /* gl.useProgram(updateProgram)
+             let uMinLife = gl.getUniformLocation(updateProgram, "uMinLife");
+             gl.uniform1f(uMinLife, life);
+             let uMaxLife = gl.getUniformLocation(updateProgram, "uMinLife");
+             gl.uniform1f(uMaxLife, life);*/
             // velocity
-            data.push(0.1 * (Math.random() - 0.5));
-            data.push(0.1 * (Math.random() - 0.5));
+            data.push(30000.);
+            data.push(30000.);
         }
 
 
@@ -216,10 +241,15 @@ function main(shaders) {
         gl.bufferData(gl.ARRAY_BUFFER, flatten(data), gl.STREAM_DRAW);
         gl.useProgram(updateProgram);
 
+
+        const uLife = gl.getUniformLocation(updateProgram, "uLife");
+        gl.uniform1f(uLife, Math.random() * (10 - 2 + 1) + 2);
+        const uSourceAngle = gl.getUniformLocation(updateProgram, "uSourceAngle");
+        gl.uniform1f(uSourceAngle, 0.);
         const uMinAngle = gl.getUniformLocation(updateProgram, "uMinAngle");
-        gl.uniform1f(uMinAngle, 0.79);
+        gl.uniform1f(uMinAngle, 0.);
         const uMaxAngle = gl.getUniformLocation(updateProgram, "uMaxAngle");
-        gl.uniform1f(uMaxAngle, 2.37);
+        gl.uniform1f(uMaxAngle, Math.PI);
         const uMinSpeed = gl.getUniformLocation(updateProgram, "uMinSpeed");
         gl.uniform1f(uMinSpeed, 0.1);
         const uMaxSpeed = gl.getUniformLocation(updateProgram, "uMaxSpeed");
@@ -231,7 +261,7 @@ function main(shaders) {
 
 
     function animate(timestamp) {
-        
+
 
         let deltaTime = 0;
         if (time === undefined) {        // First time
@@ -318,6 +348,9 @@ function main(shaders) {
             gl.uniform2fv(uPosition, vec2(planets[i][0], planets[i][1]));
             gl.uniform1f(uRadius, planets[i][2]);
         }
+        const scale = gl.getUniformLocation(fieldProgram, "scale");
+            
+        gl.uniform2fv(scale, vec2(1.5,1.5*canvas.height/canvas.width));
         // Setup attributes
         const vPosition = gl.getAttribLocation(fieldProgram, "vPosition");
 
@@ -343,8 +376,8 @@ function main(shaders) {
         gl.drawArrays(gl.POINTS, 0, nParticles);
 
     }
-    //drawPlanet(0.3, 0, 0.2);
-    drawPlanet(0., 0.0, 0.2);
+    drawPlanet(0.3, 0, 0.2);
+    drawPlanet(-0.3, 0., 0.2);
 }
 
 
