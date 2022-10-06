@@ -192,15 +192,16 @@ function main(shaders) {
         }
 
     })
-
+    let p1;
     canvas.addEventListener("mousedown", function (event) {
-        console.log(event)
-        const p = getCursorPosition(canvas, event);
+         p1 = getCursorPosition(canvas, event);
     });
-
-
-
     canvas.addEventListener("mouseup", function (event) {
+        const p2 = getCursorPosition(canvas, event);
+        let  a = p1[0] - p2[0];
+        let b = p1[1] - p2[1];
+        let r = Math.sqrt(a * a + b * b);
+        drawPlanet(p1[0], p1[1], r);
     })
 
 
