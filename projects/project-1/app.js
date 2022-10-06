@@ -7,7 +7,7 @@ let inParticlesBuffer, outParticlesBuffer, quadBuffer;
 // Particle system constants
 
 // Total number of particles
-const N_PARTICLES = 10000;
+const N_PARTICLES = 1000;
 
 let drawPoints = true;
 let drawField = true;
@@ -18,7 +18,7 @@ let time = undefined;
 let uniStatus = {
     currMinLife: 2, minLife: 2, minLifeLim: [1, 19], currMaxLife: 10, maxLife: 10,
     maxLifeLim: [2, 20], startPos: [0, 0], currVMin: 0.1, vMin: 0.1, currVMax: 0.2, vMax: 0.2,
-    currAngle: Math.PI, currMaxAngle: Math.PI, varAngle: [-Math.PI, Math.PI]
+    currAngle: Math.PI, currMaxAngle: Math.PI, varAngle: [-Math.PI, Math.PI],sourceAngle: 0
 };
 
 function main(shaders) {
@@ -54,7 +54,7 @@ function main(shaders) {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         gl.viewport(0, 0, canvas.width, canvas.height);
-       
+
     });
 
 
@@ -65,6 +65,7 @@ function main(shaders) {
         let uMaxSpeed = gl.getUniformLocation(updateProgram, "uMaxSpeed");
         let uMaxAngle = gl.getUniformLocation(updateProgram, "uMaxAngle");
         let uLife = gl.getUniformLocation(updateProgram, "uLife");
+        let uSourceAngle = gl.getUniformLocation(updateProgram, "uSourceAngle");
         const uStartPoint = gl.getUniformLocation(updateProgram, "uStartPoint");
 
 
@@ -83,8 +84,12 @@ function main(shaders) {
                 console.log(uniStatus.currMaxAngle);
                 break;
             case "ArrowLeft":
+                uniStatus.sourceAngle += 0.1
+                gl.uniform1f(uSourceAngle, uniStatus.sourceAngle);
                 break;
             case "ArrowRight":
+                uniStatus.sourceAngle -= 0.1
+                gl.uniform1f(uSourceAngle, uniStatus.sourceAngle);
                 break;
             case 'q':
                 if (uniStatus.currMinLife + 1 <= uniStatus.minLifeLim[1]) {
@@ -216,7 +221,7 @@ function main(shaders) {
             data.push(0.0);
 
             // life
-            const life = Math.random() *6;
+            const life = Math.random() * 6;
             data.push(life);
             /* gl.useProgram(updateProgram)
              let uMinLife = gl.getUniformLocation(updateProgram, "uMinLife");
@@ -349,8 +354,8 @@ function main(shaders) {
             gl.uniform1f(uRadius, planets[i][2]);
         }
         const scale = gl.getUniformLocation(fieldProgram, "scale");
-            
-        gl.uniform2fv(scale, vec2(1.5,1.5*canvas.height/canvas.width));
+
+        gl.uniform2fv(scale, vec2(1.5, 1.5 * canvas.height / canvas.width));
         // Setup attributes
         const vPosition = gl.getAttribLocation(fieldProgram, "vPosition");
 
@@ -376,8 +381,9 @@ function main(shaders) {
         gl.drawArrays(gl.POINTS, 0, nParticles);
 
     }
-    drawPlanet(0.3, 0, 0.2);
-    drawPlanet(-0.3, 0., 0.2);
+    drawPlanet(0.3, 0, 0.15);
+    drawPlanet(-0.3, 0.3, 0.2);
+    drawPlanet(-0.3, -0.3, 0.1);
 }
 
 
