@@ -381,9 +381,9 @@ function main(shaders) {
         gl.drawArrays(gl.POINTS, 0, nParticles);
 
     }
-    drawPlanet(0.3, 0, 0.15);
-    drawPlanet(-0.3, 0.3, 0.2);
-    drawPlanet(-0.3, -0.3, 0.1);
+   //drawPlanet(0.3, 0, 0.15);
+   // drawPlanet(-0.3, 0.3, 0.2);
+    //drawPlanet(-0.3, -0.3, 0.1);
 }
 
 
