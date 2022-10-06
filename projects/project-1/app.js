@@ -22,7 +22,7 @@ let uniStatus = {
     currVMin: 0.1, vMin: 0.1, 
     currVMax: 0.2, vMax: 0.2,
     sourceAngle: 0.0,
-    currMaxAngle: Math.PI, varAngle: [-Math.PI, Math.PI]
+    currMaxAngle: Math.PI, varAngle: [0, 2*Math.PI]
 };
 
 function main(shaders) {
@@ -68,7 +68,7 @@ function main(shaders) {
         let uMinSpeed = gl.getUniformLocation(updateProgram, "uMinSpeed");
         let uMaxSpeed = gl.getUniformLocation(updateProgram, "uMaxSpeed");
         let uMaxAngle = gl.getUniformLocation(updateProgram, "uMaxAngle");
-        //let uLife = gl.getUniformLocation(updateProgram, "uLife");
+        let uLife = gl.getUniformLocation(updateProgram, "uLife");
         let uSourceAngle = gl.getUniformLocation(updateProgram, "uSourceAngle");
         const uStartPoint = gl.getUniformLocation(updateProgram, "uStartPoint");
 
@@ -194,6 +194,8 @@ function main(shaders) {
     })
 
     canvas.addEventListener("mousedown", function (event) {
+        console.log(event)
+        const p = getCursorPosition(canvas, event);
     });
 
 
@@ -267,9 +269,6 @@ function main(shaders) {
         gl.bufferData(gl.ARRAY_BUFFER, flatten(data), gl.STREAM_DRAW);
         gl.useProgram(updateProgram);
 
-
-        const uLife = gl.getUniformLocation(updateProgram, "uLife");
-        gl.uniform1f(uLife, Math.random() * (10 - 2 + 1) + 2);
         const uSourceAngle = gl.getUniformLocation(updateProgram, "uSourceAngle");
         gl.uniform1f(uSourceAngle, 0.);
         const uMinAngle = gl.getUniformLocation(updateProgram, "uMinAngle");
@@ -333,7 +332,6 @@ function main(shaders) {
         const vAge = gl.getAttribLocation(updateProgram, "vAge");
         const vLife = gl.getAttribLocation(updateProgram, "vLife");
         const vVelocity = gl.getAttribLocation(updateProgram, "vVelocity");
-
         gl.bindBuffer(gl.ARRAY_BUFFER, inParticlesBuffer);
 
         gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 24, 0);
@@ -353,8 +351,6 @@ function main(shaders) {
         gl.endTransformFeedback();
         gl.disable(gl.RASTERIZER_DISCARD);
         gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, null);
-        const uLife = gl.getUniformLocation(updateProgram, "uLife");
-        gl.uniform1f(uLife, 0);
     }
 
     function swapParticlesBuffers() {
