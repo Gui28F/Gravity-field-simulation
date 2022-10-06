@@ -4,7 +4,7 @@
 #define RE  (6.371* pow(10.,6.))
 precision highp float;
 const int MAX_PLANETS=10;
-//uniform vec2 canvasSize;
+
 
 uniform float uRadius[MAX_PLANETS];
 uniform vec2 uPosition[MAX_PLANETS];

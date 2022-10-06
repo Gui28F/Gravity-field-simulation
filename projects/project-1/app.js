@@ -54,7 +54,7 @@ function main(shaders) {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         gl.viewport(0, 0, canvas.width, canvas.height);
-        gl.uniform2fv(canvasSize, vec2(canvas.width, canvas.height));
+       
     });
 
 
