@@ -2,7 +2,7 @@ import { buildProgramFromSources, loadShadersFromURLS, setupWebGL } from '../../
 import { vec2, vec3, flatten, subtract, dot } from '../../libs/MV.js';
 
 // Buffers: particles before update, particles after update, quad vertices
-let inParticlesBuffer, outParticlesBuffer, quadBuffer;
+let inParticlesBuffer, outParticlesBuffer, quadBuffer, newLife;
 
 // Particle system constants
 
@@ -16,9 +16,13 @@ let drawField = true;
 let time = undefined;
 
 let uniStatus = {
-    currMinLife: 2, minLife: 2, minLifeLim: [1, 19], currMaxLife: 10, maxLife: 10,
-    maxLifeLim: [2, 20], startPos: [0, 0], currVMin: 0.1, vMin: 0.1, currVMax: 0.2, vMax: 0.2,
-    currAngle: Math.PI, currMaxAngle: Math.PI, varAngle: [-Math.PI, Math.PI],sourceAngle: 0
+    currMinLife: 2, minLifeLim: [1, 19], 
+    currMaxLife: 10, maxLifeLim: [2, 20], 
+    startPos: [0, 0], 
+    currVMin: 0.1, vMin: 0.1, 
+    currVMax: 0.2, vMax: 0.2,
+    sourceAngle: 0.0,
+    currMaxAngle: Math.PI, varAngle: [-Math.PI, Math.PI]
 };
 
 function main(shaders) {
@@ -64,7 +68,7 @@ function main(shaders) {
         let uMinSpeed = gl.getUniformLocation(updateProgram, "uMinSpeed");
         let uMaxSpeed = gl.getUniformLocation(updateProgram, "uMaxSpeed");
         let uMaxAngle = gl.getUniformLocation(updateProgram, "uMaxAngle");
-        let uLife = gl.getUniformLocation(updateProgram, "uLife");
+        //let uLife = gl.getUniformLocation(updateProgram, "uLife");
         let uSourceAngle = gl.getUniformLocation(updateProgram, "uSourceAngle");
         const uStartPoint = gl.getUniformLocation(updateProgram, "uStartPoint");
 
@@ -92,11 +96,20 @@ function main(shaders) {
                 gl.uniform1f(uSourceAngle, uniStatus.sourceAngle);
                 break;
             case 'q':
-                if (uniStatus.currMinLife + 1 <= uniStatus.minLifeLim[1]) {
+                 if (uniStatus.currMinLife + 1 <= uniStatus.minLifeLim[1]) {
                     uniStatus.currMinLife++;
+                    const lifes = [];
+                    for(let i = 0; i < N_PARTICLES; i++){
+                        let life = Math.random() * (uniStatus.currMaxLife - uniStatus.currMinLife + 1) + 2;
+                        lifes.push(life);
+                    }    
+                    newLife = gl.createBuffer();
+                    gl.bindBuffer(gl.ARRAY_BUFFER, newLife);
+                    gl.bufferData(gl.ARRAY_BUFFER, flatten(lifes), gl.STREAM_DRAW);
+
+                    const vLife = gl.getAttribLocation(updateProgram, "vLife");
+                    gl.vertexAttribPointer(vLife, 1, gl.FLOAT, false, 0, 0);
                     console.log(uniStatus.currMinLife);
-                    let life = Math.random() * (uniStatus.currMaxLife - uniStatus.currMinLife + 1) + 2;
-                    gl.uniform1f(uLife, life);
                 }
                 break;
             case 'a':
@@ -118,10 +131,18 @@ function main(shaders) {
             case 's':
                 if (uniStatus.currMaxLife - 1 >= uniStatus.maxLifeLim[0]) {
                     uniStatus.currMaxLife--;
+                    const lifes = [];
+                    for(let i = 0; i < N_PARTICLES; i++){
+                        let life = Math.random() * (uniStatus.currMaxLife - uniStatus.currMinLife + 1) + 2;
+                        lifes.push(life);
+                    }    
+                    newLife = gl.createBuffer();
+                    gl.bindBuffer(gl.ARRAY_BUFFER, newLife);
+                    gl.bufferData(gl.ARRAY_BUFFER, flatten(lifes), gl.STREAM_DRAW);
+
+                    const vLife = gl.getAttribLocation(updateProgram, "vLife");
+                    gl.vertexAttribPointer(vLife, 1, gl.FLOAT, false, 0, 0);
                     console.log(uniStatus.currMaxLife);
-                    let life = Math.random() * (uniStatus.currMaxLife - uniStatus.currMinLife + 1) + 2;
-                    gl.uniform1f(uLife, life);
-                    console.log(life);
                 }
                 break;
             case '0':
