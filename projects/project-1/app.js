@@ -7,7 +7,7 @@ let inParticlesBuffer, outParticlesBuffer, quadBuffer, newLife;
 // Particle system constants
 
 // Total number of particles
-const N_PARTICLES = 1000;
+const N_PARTICLES = 10000;
 
 let drawPoints = true;
 let drawField = true;

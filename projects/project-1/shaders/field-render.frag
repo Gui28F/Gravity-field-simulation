@@ -42,7 +42,7 @@ float opacity(){
    // float o = step(mod(2.*log(length(f)),1.),.85);
    float o = step(mod(2.*log(length(f)),1.),.85);
    if(length(f) > 110.)
-        o = step(mod(length(f)*2.,1.),.5);
+        return o;
     return o*mf;
 }
 
