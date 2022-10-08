@@ -62,21 +62,28 @@ vec2 force(){
 void main() {
 
     /* Update parameters according to our simple rules.*/
-      vPositionOut = vPosition + vVelocity * uDeltaTime;
-      vLifeOut = vLife;
-      vec2 accel = force();
-      vVelocityOut = vVelocity + accel * uDeltaTime;
-      vAgeOut = vAge + uDeltaTime;
+   
+   vPositionOut = vPosition + vVelocity * uDeltaTime;
+   vLifeOut = vLife;
+   vec2 accel = force();
+   vVelocityOut = vVelocity + accel * uDeltaTime;
+   if(length(vVelocityOut)>uMaxSpeed)
+      vVelocityOut = vVelocity;
+   vAgeOut = vAge + uDeltaTime;
    
    if (vAgeOut >= vLife ) {
       // It's all up to you!
       float angle = uMinAngle + rand(vPosition)*(uMaxAngle - uMinAngle);
       float x = cos(angle-PI/2.-uSourceAngle);
       float y = sin(angle-PI/2.-uSourceAngle);
-      vPositionOut = uStartPoint;
+      if(uStartPoint == vec2(-3,-3))
+         vPositionOut = vPosition;
+      else
+         vPositionOut = uStartPoint;
       vAgeOut = .0;
       vLifeOut = vLife;
-      vVelocityOut = vec2(x, y) * rand(vec2(uMinSpeed, uMaxSpeed));
+      if(uStartPoint != vec2(-3,-3))
+         vVelocityOut = vec2(x, y) * rand(vec2(vPosition.x, uMaxSpeed))*(uMaxSpeed - uMinSpeed);
    }
 
 }
