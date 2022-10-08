@@ -73,7 +73,7 @@ void main() {
    
    if (vAgeOut >= vLife ) {
       // It's all up to you!
-      float angle = uMinAngle + rand(vPosition)*(uMaxAngle - uMinAngle);
+      float angle = uMinAngle + rand(vec2(sin(vPosition.x), vLife))*(uMaxAngle - uMinAngle);
       float x = cos(angle-PI/2.-uSourceAngle);
       float y = sin(angle-PI/2.-uSourceAngle);
       if(uStartPoint == vec2(-3,-3))
@@ -83,7 +83,7 @@ void main() {
       vAgeOut = .0;
       vLifeOut = vLife;
       if(uStartPoint != vec2(-3,-3))
-         vVelocityOut = vec2(x, y) * rand(vec2(vPosition.x, uMaxSpeed))*(uMaxSpeed - uMinSpeed);
+         vVelocityOut = vec2(x, y ) * rand(vec2(vPosition.y, uMaxSpeed))*(uMaxSpeed);
    }
 
 }
