@@ -85,7 +85,7 @@ function main(shaders) {
                     uniStatus.currMaxAngle -= Math.PI / 16;
                     gl.uniform1f(uMaxAngle, uniStatus.currMaxAngle);
                 }
-                console.log(uniStatus.currMaxAngle);
+
                 break;
             case "ArrowLeft":
                 uniStatus.sourceAngle += 0.1
@@ -109,13 +109,11 @@ function main(shaders) {
 
                     const vLife = gl.getAttribLocation(updateProgram, "vLife");
                     gl.vertexAttribPointer(vLife, 1, gl.FLOAT, false, 0, 0);
-                    console.log(uniStatus.currMinLife);
                 }
                 break;
             case 'a':
                 if (uniStatus.currMinLife - 1 >= uniStatus.minLifeLim[0]) {
                     uniStatus.currMinLife--;
-                    console.log(uniStatus.currMinLife);
                     let life = Math.random() * (uniStatus.currMaxLife - uniStatus.currMinLife + 1) + 2;
                     gl.uniform1f(uLife, life);
                 }
@@ -123,7 +121,6 @@ function main(shaders) {
             case 'w':
                 if (uniStatus.currMaxLife + 1 <= uniStatus.maxLifeLim[1]) {
                     uniStatus.currMaxLife++;
-                    console.log(uniStatus.currMaxLife);
                     let life = Math.random() * (uniStatus.currMaxLife - uniStatus.currMinLife + 1) + 2;
                     gl.uniform1f(uLife, life);
                 }
@@ -142,7 +139,6 @@ function main(shaders) {
 
                     const vLife = gl.getAttribLocation(updateProgram, "vLife");
                     gl.vertexAttribPointer(vLife, 1, gl.FLOAT, false, 0, 0);
-                    console.log(uniStatus.currMaxLife);
                 }
                 break;
             case '0':
@@ -163,30 +159,31 @@ function main(shaders) {
                 break;
             case "PageUp":
                 if (event.shiftKey) {
-                    if (uniStatus.currVMax + 0.1 <= uniStatus.currVMax) {
-                        uniStatus.currVMax += 0.1;
+                    if (uniStatus.currVMin + 0.1 <= uniStatus.currVMax) {
+                        uniStatus.currVMin += 0.1;
                         gl.uniform1f(uMinSpeed, uniStatus.currVMax);
                     }
-                    console.log(uniStatus.currVMax);
+                    console.log(uniStatus.currVMin,uniStatus.currVMax)
                 }
                 else {
-                    console.log(event);
                     uniStatus.currVMax += 0.1
                     gl.uniform1f(uMaxSpeed, uniStatus.currVMax);
+                    console.log(uniStatus.currVMin,uniStatus.currVMax)
                 }
                 break;
             case "PageDown":
                 if (event.shiftKey) {
-                    if (uniStatus.currVMin - 0.1 >= uniStatus.vMin) {
-                        uniStatus.currVMin -= 0.1;
-                        gl.uniform1f(uMinSpeed, uniStatus.currVMin);
-                    }
+
+                    uniStatus.currVMin -= 0.1;
+                    gl.uniform1f(uMinSpeed, uniStatus.currVMin);
+                    console.log(uniStatus.currVMin,uniStatus.currVMax)
                 }
                 else {
-                    if (uniStatus.currVMax - 0.1 >= uniStatus.currVMin) {
+                    if (uniStatus.currVMin <= uniStatus.currVMax - 0.1 && uniStatus.currVMax - 0.1 >= uniStatus.currVMin) {
                         uniStatus.currVMax -= 0.1
                         gl.uniform1f(uMaxSpeed, uniStatus.currVMax);
                     }
+                    console.log(uniStatus.currVMin,uniStatus.currVMax)
                 }
                 break;
         }
