@@ -11,7 +11,6 @@ uniform vec2 uPosition[MAX_PLANETS];
 /* Number of seconds (possibly fractional) that has passed since the last
    update step. */
 uniform float uDeltaTime;
-uniform vec2 uForce;
 uniform vec2 uStartPoint;
 uniform float uMinAngle;
 uniform float uMaxAngle;
