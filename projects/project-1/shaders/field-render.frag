@@ -26,13 +26,18 @@ vec2 force(){
     return force;
 }
 
+vec3 hsv2rgb(vec3 c)
+{
+    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
 vec3 color(){
     vec2 f = force();
-    float dir = atan(f.x, f.y) + 2. * PI;//[-PI, PI]
-    float r = sin(dir)* 120. / 255. + 135. / 255.;
-    float g = sin(dir + 2. * PI/3.) * 120. / 255. + 90. / 255.;
-    float b = sin(dir + 4. * PI/3.)* 120. / 255. + 90. / 255.;
-    return vec3 (r,g,b);
+    float l = clamp(length(f), 0.0, 1.0);
+    float dir = atan(f.y, f.x)/6.3;//[-PI, PI]
+    return hsv2rgb(vec3 (dir,1.,1.));
 }
 
 float opacity(){

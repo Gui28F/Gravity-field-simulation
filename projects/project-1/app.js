@@ -22,7 +22,7 @@ let uniStatus = {
     currVMin: 0.1, vMin: 0.1,
     currVMax: 0.2, vMax: 0.2,
     sourceAngle: 0.0,
-    currMaxAngle: Math.PI, varAngle: [0, 2 * Math.PI]
+    currMaxAngle: Math.PI, varAngle: [0, 2*Math.PI]
 };
 
 function main(shaders) {
