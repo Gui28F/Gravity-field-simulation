@@ -6,5 +6,6 @@ varying float vLifeOut;
 varying vec2 vVelocityOut;
 
 void main() {
+  
   discard;
 }

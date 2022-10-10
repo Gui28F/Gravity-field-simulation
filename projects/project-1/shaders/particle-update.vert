@@ -85,22 +85,23 @@ vec4 intersectedPlanet(vec2 pos){
 void main() {
 
     /* Update parameters according to our simple rules.*/
-   
    vPositionOut = vPosition + vVelocity * uDeltaTime;
    vLifeOut = vLife;
-   //vec4 i = intersectedPlanet(vPositionOut);
+   vec4 i = intersectedPlanet(vPositionOut);
    vec2 accel = force();
    vVelocityOut = vVelocity + accel * uDeltaTime;
    if(length(vVelocityOut)>uMaxSpeed)
       vVelocityOut = vVelocity;
-  /* if( i[0] == 1.){
-      float angle = acos(length(accel));
+   //if( i[0] == 1.)
+      //vAgeOut = vLife;
+   //else
+      vAgeOut = vAge + uDeltaTime;
+     /* float angle = acos(length(accel));
       float x = cos(angle)*vPosition.x - sin(angle)*vPosition.y;
       float y = sin(angle)*vPosition.x + cos(angle)*vPosition.y;
       
       vVelocityOut = vVelocity - accel + accel*vec2(x,y) * uDeltaTime;
    }*/
-   vAgeOut = vAge + uDeltaTime;
    
    if (vAgeOut >= vLife ) {
       // It's all up to you!

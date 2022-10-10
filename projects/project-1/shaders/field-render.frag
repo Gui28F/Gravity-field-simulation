@@ -10,16 +10,16 @@ uniform float uRadius[MAX_PLANETS];
 uniform vec2 uPosition[MAX_PLANETS];
 
 varying vec2 worldPos;
-varying vec2 sca;
+
 
 vec2 force(){
    vec2 force = vec2(0.,0.);
    for(int i = 0; i < MAX_PLANETS; i++){
         if(uRadius[i] != 0.){
             vec2 pos = worldPos;
-            vec2 d = normalize(uPosition[i]*sca- pos);
+            vec2 d = normalize(uPosition[i]- pos);
             float m = 4. * PI * pow(uRadius[i]* RE,3.)/3. * rho;
-            float f = G * m/pow(length(uPosition[i]*sca- pos)*RE,2.);
+            float f = G * m/pow(length(uPosition[i]- pos)*RE,2.);
             force += f * d;
         }
    }

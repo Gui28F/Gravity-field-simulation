@@ -187,7 +187,7 @@ function main(shaders) {
         let x = ((mx / canvas.width * 2) - 1);
         let y = (((canvas.height - my) / canvas.height * 2) - 1);
 
-        return vec2(x, y);
+        return vec2(x*1.5, y*1.5 * canvas.height / canvas.width);
     }
 
     window.requestAnimationFrame(animate);
