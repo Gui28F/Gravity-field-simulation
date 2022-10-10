@@ -35,7 +35,6 @@ vec3 hsv2rgb(vec3 c)
 
 vec3 color(){
     vec2 f = force();
-    float l = clamp(length(f), 0.0, 1.0);
     float dir = atan(f.y, f.x)/6.3;//[-PI, PI]
     return hsv2rgb(vec3 (dir,1.,1.));
 }
