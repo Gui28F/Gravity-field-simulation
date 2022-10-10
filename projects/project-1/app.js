@@ -58,7 +58,8 @@ function main(shaders) {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         gl.viewport(0, 0, canvas.width, canvas.height);
-
+        const scale = gl.getUniformLocation(renderProgram, "scale");
+        gl.uniform2fv(scale, vec2(1.5, 1.5 * canvas.height / canvas.width));
     });
 
 
@@ -95,7 +96,7 @@ function main(shaders) {
                 gl.uniform1f(uSourceAngle, uniStatus.sourceAngle);
                 break;
             case 'q':
-                if (uniStatus.currMinLife + 1 <= uniStatus.currMaxLife && 
+                if (uniStatus.currMinLife + 1 <= uniStatus.currMaxLife &&
                     uniStatus.currMinLife + 1 <= uniStatus.minLifeLim[1])
                     uniStatus.currMinLife++;
                 console.log("LIFE: ", uniStatus.currMinLife, uniStatus.currMaxLife)
@@ -207,11 +208,9 @@ function main(shaders) {
 
         for (let i = 0; i < nParticles; ++i) {
             //position
-            const x = Math.random() * (1 - -1 + 1) - 1;
-            const y = Math.random() * (1 - -1 + 1) - 1;
+            const x = Math.random() * (1.5 - -1.5 + 1) - 1.5;
+            const y = Math.random() * (1.5 - -1.5 + 1) - 1.5;
 
-
-            //data.push(uniStatus.startPos[0]); data.push(uniStatus.startPos[1]);
             data.push(x, y)
             // age
             data.push(0.0);
@@ -219,7 +218,6 @@ function main(shaders) {
             // life
             const life = Math.random() * 6;
             data.push(life);
-            gl.useProgram(updateProgram)
             // velocity
             data.push(0);
             data.push(0);
@@ -292,8 +290,9 @@ function main(shaders) {
         const uDeltaTime = gl.getUniformLocation(updateProgram, "uDeltaTime");
         const uMinLife = gl.getUniformLocation(updateProgram, "uMinLife");
         const uMaxLife = gl.getUniformLocation(updateProgram, "uMinLife");
-
         gl.useProgram(updateProgram);
+        
+        
         for (let i = 0; i < planets.length; i++) {
             const uPosition = gl.getUniformLocation(updateProgram, "uPosition[" + i + "]");
             const uRadius = gl.getUniformLocation(updateProgram, "uRadius[" + i + "]");
@@ -367,7 +366,9 @@ function main(shaders) {
 
         // Setup attributes
         const vPosition = gl.getAttribLocation(renderProgram, "vPosition");
-
+        const scale = gl.getUniformLocation(renderProgram, "scale");
+        gl.useProgram(renderProgram);
+        gl.uniform2fv(scale, vec2(1.5, 1.5 * canvas.height / canvas.width));
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 
         gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 24, 0);
@@ -376,9 +377,6 @@ function main(shaders) {
         gl.drawArrays(gl.POINTS, 0, nParticles);
 
     }
-    //drawPlanet(0.3, 0, 0.15);
-    // drawPlanet(-0.3, 0.3, 0.2);
-    //drawPlanet(-0.3, -0.3, 0.1);
 }
 
 

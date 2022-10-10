@@ -47,17 +47,40 @@ highp float rand(vec2 co)
 
 vec2 force(){
    vec2 force = vec2(0.,0.);
-  
+   vec2 pos = vPosition.xy;
    for(int i = 0; i < MAX_PLANETS; i++){
-      if(uRadius[i] != 0.){
-        vec2 pos = vPosition.xy;
-        vec2 d = normalize(uPosition[i] - pos);
-        float m = 4. * PI * pow(uRadius[i] * RE,3.)/3. * rho;
-        float f = G * m/pow(length(uPosition[i] - pos)*RE,2.);
-        force += f * d ;
+      if(uRadius[i] != 0. ){
+         vec2 d = normalize(uPosition[i] - pos);
+         float m = 4. * PI * pow(uRadius[i] * RE,3.)/3. * rho;
+         float f = G * m/pow(length(uPosition[i]- pos)*RE,2.);
+        if(length(uPosition[i]- pos)<uRadius[i]){
+           //d = vec2(vPosition.x, vPosition.y);
+           /* float x = -uRadius[i]*RE* pow(2.*PI*uDeltaTime,2.)*cos(2.*PI*uDeltaTime*uDeltaTime);
+            float y = uRadius[i]*RE* pow(2.*PI*uDeltaTime,2.)*sin(2.*PI*uDeltaTime*uDeltaTime);
+            d = vec2(x,y);
+          d = vec2(cos(d.x), sin(d.x));
+         
+         
+            d = vec2(x, y);*/
+            vec2 d2 = vec2(d.y, -d.x);
+            force += f * d2;
+            force -= 3.*f*d;
+         }else
+         force += f * d ;
+         
+
       }
    }
     return force;
+}
+
+vec4 intersectedPlanet(vec2 pos){
+   for(int i = 0; i < MAX_PLANETS; i++){
+      vec2 uPos = uPosition[i];
+      if(pow(pos.x-uPos.x,2.)+pow(pos.y-uPos.y,2.)<pow(uRadius[i],2.))
+         return vec4(1., uPos.x, uPos.y, uRadius[i]);
+   }
+   return vec4(0.,0.,0.,0.);
 }
 
 void main() {
@@ -66,10 +89,18 @@ void main() {
    
    vPositionOut = vPosition + vVelocity * uDeltaTime;
    vLifeOut = vLife;
+   //vec4 i = intersectedPlanet(vPositionOut);
    vec2 accel = force();
    vVelocityOut = vVelocity + accel * uDeltaTime;
    if(length(vVelocityOut)>uMaxSpeed)
       vVelocityOut = vVelocity;
+  /* if( i[0] == 1.){
+      float angle = acos(length(accel));
+      float x = cos(angle)*vPosition.x - sin(angle)*vPosition.y;
+      float y = sin(angle)*vPosition.x + cos(angle)*vPosition.y;
+      
+      vVelocityOut = vVelocity - accel + accel*vec2(x,y) * uDeltaTime;
+   }*/
    vAgeOut = vAge + uDeltaTime;
    
    if (vAgeOut >= vLife ) {

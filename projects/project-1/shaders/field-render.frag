@@ -18,7 +18,7 @@ vec2 force(){
         if(uRadius[i] != 0.){
             vec2 pos = worldPos;
             vec2 d = normalize(uPosition[i]*sca- pos);
-            float m = 4. * PI * pow(uRadius[i] * RE,3.)/3. * rho;
+            float m = 4. * PI * pow(uRadius[i]* RE,3.)/3. * rho;
             float f = G * m/pow(length(uPosition[i]*sca- pos)*RE,2.);
             force += f * d;
         }
@@ -47,7 +47,7 @@ float opacity(){
    // float o = step(mod(2.*log(length(f)),1.),.85);
    float o = step(mod(2.303 * log(length(f)),1.),.85);
    //if(length(f) > 110.)
-     //   return o;
+    //   return o;
     return o*mf;
 }
 
