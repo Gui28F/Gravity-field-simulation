@@ -110,16 +110,24 @@ void main() {
       float angle = uMinAngle + rand(vec2(sin(vPosition.x), vLife))*(uMaxAngle - uMinAngle);
       float x = cos(angle-PI/2.-uSourceAngle);
       float y = sin(angle-PI/2.-uSourceAngle);
-      if(isInsidePlanet)
-         vPositionOut = vec2(rand(vec2(x,y)),rand(vPosition));
-      else if(uUseStartPoint)
-         vPositionOut = uStartPoint;
-      else
-         vPositionOut = vPosition;
       vAgeOut = .0;
       vLifeOut = uMinLife + rand(vec2(vPosition.x, vLife))*(uMaxLife - uMinLife);;
-      if(uUseStartPoint)
+      if(uUseStartPoint){
+         vPositionOut = uStartPoint;
          vVelocityOut = vec2(x, y ) * rand(vec2(vPosition.y, uMaxSpeed))*(uMaxSpeed);
+         if(isInsidePlanet){
+            vVelocityOut = vVelocity;
+            vLifeOut = vLife;
+         }
+      }else{
+         vPositionOut = vPosition;
+         if(isInsidePlanet){
+            vPositionOut = vec2(rand(vec2(x,y)),rand(vPosition));
+            vVelocityOut = vVelocity;
+            vLifeOut = vLife;
+         }
+      }
+
    }
 
 }
