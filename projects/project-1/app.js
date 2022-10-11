@@ -59,8 +59,8 @@ function main(shaders) {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         gl.viewport(0, 0, canvas.width, canvas.height);
-        //  const scale = gl.getUniformLocation(renderProgram, "scale");
-        //gl.uniform2fv(scale, vec2(1.5, 1.5 * canvas.height / canvas.width));
+        //  const uScale = gl.getUniformLocation(renderProgram, "uScale");
+        //gl.uniform2fv(uScale, vec2(1.5, 1.5 * canvas.height / canvas.width));
     });
 
 
@@ -359,9 +359,9 @@ function main(shaders) {
             gl.uniform2fv(uPosition, vec2(planets[i][0], planets[i][1]));
             gl.uniform1f(uRadius, planets[i][2]);
         }
-        const scale = gl.getUniformLocation(fieldProgram, "scale");
+        const uScale = gl.getUniformLocation(fieldProgram, "uScale");
 
-        gl.uniform2fv(scale, vec2(1.5, 1.5 * canvas.height / canvas.width));
+        gl.uniform2fv(uScale, vec2(1.5, 1.5 * canvas.height / canvas.width));
         // Setup attributes
         const vPosition = gl.getAttribLocation(fieldProgram, "vPosition");
 
@@ -378,8 +378,8 @@ function main(shaders) {
 
         // Setup attributes
         const vPosition = gl.getAttribLocation(renderProgram, "vPosition");
-        const scale = gl.getUniformLocation(renderProgram, "scale");
-        gl.uniform2fv(scale, vec2(1.5, 1.5 * canvas.height / canvas.width));
+        const uScale = gl.getUniformLocation(renderProgram, "uScale");
+        gl.uniform2fv(uScale, vec2(1.5, 1.5 * canvas.height / canvas.width));
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 
         gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 24, 0);
