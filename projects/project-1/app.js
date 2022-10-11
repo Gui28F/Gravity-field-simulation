@@ -8,7 +8,7 @@ let inParticlesBuffer, outParticlesBuffer, quadBuffer, newLife;
 
 // Total number of particles
 const N_PARTICLES = 100000;
-
+const MAX_PLANETS = 10;
 let drawPoints = true;
 let drawField = true;
 
@@ -18,11 +18,12 @@ let time = undefined;
 let uniStatus = {
     currMinLife: 2, minLifeLim: [1, 19],
     currMaxLife: 10, maxLifeLim: [2, 20],
-    startPos: [0, 0],
+    startPos: vec2(0,0),
     currVMin: 0.1, vMin: 0.1,
     currVMax: 0.2, vMax: 0.2,
     sourceAngle: 0.0,
-    currMaxAngle: Math.PI, varAngle: [0, 2*Math.PI]
+    currMaxAngle: 2 * Math.PI, varAngle: [0, 2 * Math.PI],
+    currMinAngle: 0.0, minSpeed: 0.1, maxSpeed:0.2
 };
 
 function main(shaders) {
@@ -58,8 +59,8 @@ function main(shaders) {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         gl.viewport(0, 0, canvas.width, canvas.height);
-        const scale = gl.getUniformLocation(renderProgram, "scale");
-        gl.uniform2fv(scale, vec2(1.5, 1.5 * canvas.height / canvas.width));
+        //  const scale = gl.getUniformLocation(renderProgram, "scale");
+        //gl.uniform2fv(scale, vec2(1.5, 1.5 * canvas.height / canvas.width));
     });
 
 
@@ -126,6 +127,9 @@ function main(shaders) {
             case 'Shift':
                 window.addEventListener("mousemove", function (event) {
                     if (event.shiftKey) {
+                        gl.useProgram(updateProgram)
+                        const uUseStartPoint = gl.getUniformLocation(updateProgram, "uUseStartPoint");
+                        gl.uniform1f(uUseStartPoint, 1.);
                         const p = getCursorPosition(canvas, event);
                         gl.useProgram(updateProgram);
                         gl.uniform2f(uStartPoint, p[0], p[1]);
@@ -187,7 +191,7 @@ function main(shaders) {
         let x = ((mx / canvas.width * 2) - 1);
         let y = (((canvas.height - my) / canvas.height * 2) - 1);
 
-        return vec2(x*1.5, y*1.5 * canvas.height / canvas.width);
+        return vec2(x * 1.5, y * 1.5 * canvas.height / canvas.width);
     }
 
     window.requestAnimationFrame(animate);
@@ -236,24 +240,29 @@ function main(shaders) {
         gl.useProgram(updateProgram);
 
         const uSourceAngle = gl.getUniformLocation(updateProgram, "uSourceAngle");
-        gl.uniform1f(uSourceAngle, 0.);
+        gl.uniform1f(uSourceAngle, uniStatus.sourceAngle);
         const uMinAngle = gl.getUniformLocation(updateProgram, "uMinAngle");
-        gl.uniform1f(uMinAngle, 0.);
+        gl.uniform1f(uMinAngle, uniStatus.currMinAngle);
         const uMaxAngle = gl.getUniformLocation(updateProgram, "uMaxAngle");
-        gl.uniform1f(uMaxAngle, Math.PI);
+        gl.uniform1f(uMaxAngle, uniStatus.currMaxAngle);
         const uMinSpeed = gl.getUniformLocation(updateProgram, "uMinSpeed");
-        gl.uniform1f(uMinSpeed, 0.1);
+        gl.uniform1f(uMinSpeed, uniStatus.minSpeed);
         const uMaxSpeed = gl.getUniformLocation(updateProgram, "uMaxSpeed");
-        gl.uniform1f(uMaxSpeed, 0.2);
+        gl.uniform1f(uMaxSpeed, uniStatus.maxSpeed);
         const uStartPoint = gl.getUniformLocation(updateProgram, "uStartPoint");
-        gl.uniform2fv(uStartPoint, vec2(-3, -3));
+        gl.uniform2fv(uStartPoint, uniStatus.startPos);
+        const uUseStartPoint = gl.getUniformLocation(updateProgram, "uUseStartPoint");
+        gl.uniform1f(uUseStartPoint, 0.);
         const uMinLife = gl.getUniformLocation(updateProgram, "uMinLife");
         gl.uniform1f(uMinLife, uniStatus.currMinLife);
         const uMaxLife = gl.getUniformLocation(updateProgram, "uMinLife");
         gl.uniform1f(uMaxLife, uniStatus.currMaxLife);
     }
     function drawPlanet(x, y, radius) {
-        planets.push(vec3(x, y, radius))
+        if (planets.length >= MAX_PLANETS)
+            alert('Can not put more planets')
+        else
+            planets.push(vec3(x, y, radius))
     }
 
 
@@ -261,6 +270,7 @@ function main(shaders) {
 
 
         let deltaTime = 0;
+
         if (time === undefined) {        // First time
             time = timestamp / 1000;
             deltaTime = 0;
@@ -269,6 +279,8 @@ function main(shaders) {
             deltaTime = timestamp / 1000 - time;
             time = timestamp / 1000;
         }
+        if (deltaTime > 0.05)
+            deltaTime = 0;
 
         window.requestAnimationFrame(animate);
 
@@ -291,8 +303,8 @@ function main(shaders) {
         const uMinLife = gl.getUniformLocation(updateProgram, "uMinLife");
         const uMaxLife = gl.getUniformLocation(updateProgram, "uMinLife");
         gl.useProgram(updateProgram);
-        
-        
+
+
         for (let i = 0; i < planets.length; i++) {
             const uPosition = gl.getUniformLocation(updateProgram, "uPosition[" + i + "]");
             const uRadius = gl.getUniformLocation(updateProgram, "uRadius[" + i + "]");
@@ -367,7 +379,6 @@ function main(shaders) {
         // Setup attributes
         const vPosition = gl.getAttribLocation(renderProgram, "vPosition");
         const scale = gl.getUniformLocation(renderProgram, "scale");
-        gl.useProgram(renderProgram);
         gl.uniform2fv(scale, vec2(1.5, 1.5 * canvas.height / canvas.width));
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 

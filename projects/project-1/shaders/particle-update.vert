@@ -18,8 +18,10 @@ uniform float uMinSpeed;
 uniform float uMaxSpeed;
 uniform float uMinLife;
 uniform float uMaxLife;
-/* Inputs. These reflect the state of a single particle before the update. */
 uniform float uSourceAngle;
+uniform bool uUseStartPoint;
+/* Inputs. These reflect the state of a single particle before the update. */
+
 
 attribute vec2 vPosition;              // actual position
 attribute float vAge;                  // actual age (in seconds)
@@ -52,20 +54,21 @@ vec2 force(){
          vec2 d = normalize(uPosition[i] - pos);
          float m = 4. * PI * pow(uRadius[i] * RE,3.)/3. * rho;
          float f = G * m/pow(length(uPosition[i]- pos)*RE,2.);
-        if(length(uPosition[i]- pos)<uRadius[i]){
+         
+        if(length(uPosition[i]- pos)<uRadius[i]*1.5){
            //d = vec2(vPosition.x, vPosition.y);
            /* float x = -uRadius[i]*RE* pow(2.*PI*uDeltaTime,2.)*cos(2.*PI*uDeltaTime*uDeltaTime);
             float y = uRadius[i]*RE* pow(2.*PI*uDeltaTime,2.)*sin(2.*PI*uDeltaTime*uDeltaTime);
             d = vec2(x,y);
           d = vec2(cos(d.x), sin(d.x));
-         
-         
             d = vec2(x, y);*/
+
+
             vec2 d2 = vec2(d.y, -d.x);
-            force += f * d2;
-            force -= 3.*f*d;
+            force += 2.*f * d2;
+            force -= 2.*f*d;
          }else
-         force += f * d ;
+            force += f * d ;
          
 
       }
@@ -73,13 +76,13 @@ vec2 force(){
     return force;
 }
 
-vec4 intersectedPlanet(vec2 pos){
+bool intersectedPlanet(vec2 pos){
    for(int i = 0; i < MAX_PLANETS; i++){
       vec2 uPos = uPosition[i];
       if(pow(pos.x-uPos.x,2.)+pow(pos.y-uPos.y,2.)<pow(uRadius[i],2.))
-         return vec4(1., uPos.x, uPos.y, uRadius[i]);
+         return true;
    }
-   return vec4(0.,0.,0.,0.);
+   return false;
 }
 
 void main() {
@@ -87,14 +90,11 @@ void main() {
     /* Update parameters according to our simple rules.*/
    vPositionOut = vPosition + vVelocity * uDeltaTime;
    vLifeOut = vLife;
-   vec4 i = intersectedPlanet(vPositionOut);
+   bool isInsidePlanet = intersectedPlanet(vPositionOut);
    vec2 accel = force();
    vVelocityOut = vVelocity + accel * uDeltaTime;
    if(length(vVelocityOut)>uMaxSpeed)
       vVelocityOut = vVelocity;
-   //if( i[0] == 1.)
-      //vAgeOut = vLife;
-   //else
       vAgeOut = vAge + uDeltaTime;
      /* float angle = acos(length(accel));
       float x = cos(angle)*vPosition.x - sin(angle)*vPosition.y;
@@ -102,19 +102,23 @@ void main() {
       
       vVelocityOut = vVelocity - accel + accel*vec2(x,y) * uDeltaTime;
    }*/
+   if(isInsidePlanet)
+      vAgeOut = vLife;
    
    if (vAgeOut >= vLife ) {
       // It's all up to you!
       float angle = uMinAngle + rand(vec2(sin(vPosition.x), vLife))*(uMaxAngle - uMinAngle);
       float x = cos(angle-PI/2.-uSourceAngle);
       float y = sin(angle-PI/2.-uSourceAngle);
-      if(uStartPoint == vec2(-3,-3))
-         vPositionOut = vPosition;
-      else
+      if(isInsidePlanet)
+         vPositionOut = vec2(rand(vec2(x,y)),rand(vPosition));
+      else if(uUseStartPoint)
          vPositionOut = uStartPoint;
+      else
+         vPositionOut = vPosition;
       vAgeOut = .0;
       vLifeOut = uMinLife + rand(vec2(vPosition.x, vLife))*(uMaxLife - uMinLife);;
-      if(uStartPoint != vec2(-3,-3))
+      if(uUseStartPoint)
          vVelocityOut = vec2(x, y ) * rand(vec2(vPosition.y, uMaxSpeed))*(uMaxSpeed);
    }
 
