@@ -18,13 +18,15 @@ let time = undefined;
 let uniStatus = {
     currMinLife: 2, minLifeLim: [1, 19],
     currMaxLife: 10, maxLifeLim: [2, 20],
-    startPos: vec2(0,0),
+    startPos: vec2(0, 0),
     currVMin: 0.1, vMin: 0.1,
     currVMax: 0.2, vMax: 0.2,
     sourceAngle: 0.0,
     currMaxAngle: 2 * Math.PI, varAngle: [0, 2 * Math.PI],
-    currMinAngle: 0.0, minSpeed: 0.1, maxSpeed:0.2
+    currMinAngle: 0.0, minSpeed: 0.1, maxSpeed: 0.2
 };
+
+
 
 function main(shaders) {
     // Generate the canvas element to fill the entire page
@@ -196,6 +198,17 @@ function main(shaders) {
 
     window.requestAnimationFrame(animate);
     let planets = [];
+    function isInsidePlanet(x, y, radius) {
+        let i;
+        for (i = 0; i < planets.length; i++) {
+            if (Math.pow(x - planets[i][0], 2.) + Math.pow(y - planets[i][1], 2.) < Math.pow(planets[i][2], 2.))
+                return true;
+            if (Math.pow(x - planets[i][0], 2.) + Math.pow(y - planets[i][1], 2.) < Math.pow(radius, 2.))
+                return true;
+        }
+        return false;
+
+    }
 
     function buildQuad() {
         const vertices = [-1.0, 1.0, -1.0, -1.0, 1.0, -1.0,
@@ -261,6 +274,8 @@ function main(shaders) {
     function drawPlanet(x, y, radius) {
         if (planets.length >= MAX_PLANETS)
             alert('Can not put more planets')
+        else if (isInsidePlanet(x, y, radius))
+            alert('Can not put planets inside planets')
         else
             planets.push(vec3(x, y, radius))
     }

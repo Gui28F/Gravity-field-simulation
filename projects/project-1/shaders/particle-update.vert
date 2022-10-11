@@ -122,7 +122,7 @@ void main() {
       }else{
          vPositionOut = vPosition;
          if(isInsidePlanet){
-            vPositionOut = vec2(rand(vec2(x,y)),rand(vPosition));
+            vPositionOut = 1.+vec2(rand(vec2(x,y)),rand(vec2(x,y)));
             vVelocityOut = vVelocity;
             vLifeOut = vLife;
          }
