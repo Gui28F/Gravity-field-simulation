@@ -91,12 +91,12 @@ function main(shaders) {
 
                 break;
             case "ArrowLeft":
-                uniStatus.sourceAngle += 0.1
-                gl.uniform1f(uSourceAngle, uniStatus.sourceAngle);
+                uniStatus.sourceAngle = Math.round((uniStatus.sourceAngle + 0.1) * 10) / 10;
+                gl.uniform1f(uSourceAngle, Math.round((uniStatus.sourceAngle + 0.1) * 10) / 10);
                 break;
             case "ArrowRight":
-                uniStatus.sourceAngle -= 0.1
-                gl.uniform1f(uSourceAngle, uniStatus.sourceAngle);
+                uniStatus.sourceAngle = Math.round((uniStatus.sourceAngle - 0.1) * 10) / 10;
+                gl.uniform1f(uSourceAngle, Math.round((uniStatus.sourceAngle - 0.1) * 10) / 10);
                 break;
             case 'q':
                 if (uniStatus.currMinLife + 1 < uniStatus.currMaxLife &&
@@ -142,31 +142,36 @@ function main(shaders) {
                 break;
             case "PageUp":
                 if (event.shiftKey) {
+                    console.log('shift + pageUp')
                     if (uniStatus.currVMin + 0.1 <= uniStatus.currVMax) {
-                        uniStatus.currVMin += 0.1;
-                        gl.uniform1f(uMinSpeed, uniStatus.currVMax);
+                        uniStatus.currVMin = Math.round((uniStatus.currVMin + 0.1) * 10) / 10;;
+                        gl.uniform1f(uMinSpeed, Math.round((uniStatus.currVMin + 0.1) * 10) / 10);
                     }
                     console.log(uniStatus.currVMin, uniStatus.currVMax)
                 }
                 else {
-                    uniStatus.currVMax += 0.1
-                    gl.uniform1f(uMaxSpeed, uniStatus.currVMax);
-                    console.log(uniStatus.currVMin, uniStatus.currVMax)
+                    console.log('pageUp')
+                    uniStatus.currVMax = Math.round((uniStatus.currVMax + 0.1) * 10) / 10;
+                    gl.uniform1f(uMaxSpeed, Math.round(uniStatus.currVMax * 10) / 10);
+                    console.log(Math.round(uniStatus.currVMin * 10) / 10, Math.round(uniStatus.currVMax * 10) / 10)
                 }
                 break;
             case "PageDown":
                 if (event.shiftKey) {
-
-                    uniStatus.currVMin -= 0.1;
-                    gl.uniform1f(uMinSpeed, uniStatus.currVMin);
-                    console.log(uniStatus.currVMin, uniStatus.currVMax)
+                    console.log('shift + pageDown')
+                    if (uniStatus.currVMin - 0.1 >= 0) {
+                        uniStatus.currVMin = Math.round((uniStatus.currVMin - 0.1) * 10) / 10;;
+                        gl.uniform1f(uMinSpeed, Math.round(uniStatus.currVMin * 10) / 10);
+                    }
+                    console.log(Math.round(uniStatus.currVMin * 10) / 10, Math.round(uniStatus.currVMax * 10) / 10)
                 }
                 else {
+                    console.log('pageDown')
                     if (uniStatus.currVMin <= uniStatus.currVMax - 0.1 && uniStatus.currVMax - 0.1 >= uniStatus.currVMin) {
-                        uniStatus.currVMax -= 0.1
-                        gl.uniform1f(uMaxSpeed, uniStatus.currVMax);
+                        uniStatus.currVMax = Math.round((uniStatus.currVMax - 0.1) * 10) / 10;
+                        gl.uniform1f(uMaxSpeed, Math.round(uniStatus.currVMax * 10) / 10);
                     }
-                    console.log(uniStatus.currVMin, uniStatus.currVMax)
+                    console.log(Math.round(uniStatus.currVMin * 10) / 10, Math.round(uniStatus.currVMax * 10) / 10)
                 }
                 break;
         }
@@ -208,7 +213,7 @@ function main(shaders) {
 
     window.requestAnimationFrame(animate);
     let planets = [];
-    function isInsidePlanet(x, y, radius) {
+    /*function isInsidePlanet(x, y, radius) {
         let i;
         for (i = 0; i < planets.length; i++) {
             if (Math.pow(x - planets[i][0], 2.) + Math.pow(y - planets[i][1], 2.) < Math.pow(planets[i][2], 2.))
@@ -218,7 +223,7 @@ function main(shaders) {
         }
         return false;
 
-    }
+    }*/
 
     function buildQuad() {
         const vertices = [-1.0, 1.0, -1.0, -1.0, 1.0, -1.0,
@@ -284,8 +289,8 @@ function main(shaders) {
     function drawPlanet(x, y, radius) {
         if (planets.length >= MAX_PLANETS)
             alert('Can not put more planets')
-        else if (isInsidePlanet(x, y, radius))
-            alert('Can not put planets inside planets')
+        // else if (isInsidePlanet(x, y, radius))
+        //  alert('Can not put planets inside planets')
         else
             planets.push(vec3(x, y, radius))
     }

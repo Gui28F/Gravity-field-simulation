@@ -93,41 +93,41 @@ void main() {
    bool isInsidePlanet = intersectedPlanet(vPositionOut);
    vec2 accel = force();
    vVelocityOut = vVelocity + accel * uDeltaTime;
-   if(length(vVelocityOut)>uMaxSpeed)
-      vVelocityOut = vVelocity;
-      vAgeOut = vAge + uDeltaTime;
+   vAgeOut = vAge + uDeltaTime;
      /* float angle = acos(length(accel));
       float x = cos(angle)*vPosition.x - sin(angle)*vPosition.y;
       float y = sin(angle)*vPosition.x + cos(angle)*vPosition.y;
       
       vVelocityOut = vVelocity - accel + accel*vec2(x,y) * uDeltaTime;
    }*/
-   if(isInsidePlanet)
-      vAgeOut = vLife;
+   if(isInsidePlanet){
+      vAgeOut =vLife-0.1;
+      vPositionOut = uStartPoint;
+   }
    
    if (vAgeOut >= vLife ) {
       // It's all up to you!
-      float angle = uMinAngle + rand(vec2(sin(vPosition.x), vLife))*(uMaxAngle - uMinAngle);
-      float x = cos(angle-PI/2.-uSourceAngle);
-      float y = sin(angle-PI/2.-uSourceAngle);
+      float angle = rand(vec2(sin(vPosition.x), vLife))*(uMaxAngle - uMinAngle);
+      float x = cos(angle-uSourceAngle-PI);
+      float y = sin(angle-uSourceAngle-PI);
       vAgeOut = .0;
       vLifeOut = uMinLife + rand(vec2(vPosition.x, vLife))*(uMaxLife - uMinLife);;
      // if(uUseStartPoint){
       vPositionOut = uStartPoint;
-      vVelocityOut = vec2(x, y ) * rand(vec2(vPosition.y, uMaxSpeed))*(uMaxSpeed);
-     /* if(isInsidePlanet){
-         vVelocityOut = vVelocity;
-         vLifeOut = vLife;
-      }
-     }else{
-         vPositionOut = vPosition;
+      vVelocityOut = vec2(x, y) * rand(vec2(vLife, uMaxSpeed))*(uMaxSpeed);
+     
+     
+     /*}else{
+         vPositionOut = uStartPoint;
          if(isInsidePlanet){
-            vPositionOut = 1.+vec2(rand(vec2(x,y)),rand(vec2(x,y)));
+            //vPositionOut = 1.+vec2(rand(vec2(x,y)),rand(vec2(x,y)));
             vVelocityOut = vVelocity;
             vLifeOut = vLife;
          }
-      }*/
+     // }*/
 
    }
+   if(length(vVelocityOut)>uMaxSpeed)
+      vVelocityOut = vVelocity;
 
 }

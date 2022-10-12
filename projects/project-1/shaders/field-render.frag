@@ -45,8 +45,8 @@ float opacity(){
    // float o = step(mod(cos(length(f))/length(f)  ,1.),.75);
    // float o = step(mod(2.*log(length(f)),1.),.85);
    float o = step(mod(2.303 * log(length(f)),1.),.85);
-   //if(length(f) > 110.)
-    //   return o;
+  // if(clamp(length(f), 0.0, 1.0) >1.)
+      // return  mf*step(mod(1./(length(f)+0.5),1.),.85);
     return o*mf;
 }
 
