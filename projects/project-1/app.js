@@ -99,7 +99,7 @@ function main(shaders) {
                 gl.uniform1f(uSourceAngle, uniStatus.sourceAngle);
                 break;
             case 'q':
-                if (uniStatus.currMinLife + 1 <= uniStatus.currMaxLife &&
+                if (uniStatus.currMinLife + 1 < uniStatus.currMaxLife &&
                     uniStatus.currMinLife + 1 <= uniStatus.minLifeLim[1])
                     uniStatus.currMinLife++;
                 console.log("LIFE: ", uniStatus.currMinLife, uniStatus.currMaxLife)
@@ -116,7 +116,8 @@ function main(shaders) {
                 console.log("LIFE: ", uniStatus.currMinLife, uniStatus.currMaxLife)
                 break;
             case 's':
-                if (uniStatus.currMaxLife - 1 >= uniStatus.maxLifeLim[0])
+                if (uniStatus.currMaxLife - 1 >= uniStatus.maxLifeLim[0] &&
+                    uniStatus.currMaxLife - 1 > uniStatus.currMinLife)
                     uniStatus.currMaxLife--;
                 console.log("LIFE: ", uniStatus.currMinLife, uniStatus.currMaxLife)
                 break;
@@ -130,8 +131,8 @@ function main(shaders) {
                 window.addEventListener("mousemove", function (event) {
                     if (event.shiftKey) {
                         gl.useProgram(updateProgram)
-                        const uUseStartPoint = gl.getUniformLocation(updateProgram, "uUseStartPoint");
-                        gl.uniform1f(uUseStartPoint, 1.);
+                        //const uUseStartPoint = gl.getUniformLocation(updateProgram, "uUseStartPoint");
+                        // gl.uniform1f(uUseStartPoint, 1.);
                         const p = getCursorPosition(canvas, event);
                         gl.useProgram(updateProgram);
                         gl.uniform2f(uStartPoint, p[0], p[1]);
@@ -171,16 +172,25 @@ function main(shaders) {
         }
 
     })
-    let p1;
+    let p1, mousedown;
     canvas.addEventListener("mousedown", function (event) {
+        mousedown = true;
         p1 = getCursorPosition(canvas, event);
+        drawPlanet(p1[0], p1[1], 0);
     });
+
+    canvas.addEventListener("mousemove", function (event) {
+        if (mousedown) {
+            const p2 = getCursorPosition(canvas, event);
+            let a = p1[0] - p2[0];
+            let b = p1[1] - p2[1];
+            let r = Math.sqrt(a * a + b * b);
+            planets[planets.length - 1][2] = r;
+        }
+    });
+
     canvas.addEventListener("mouseup", function (event) {
-        const p2 = getCursorPosition(canvas, event);
-        let a = p1[0] - p2[0];
-        let b = p1[1] - p2[1];
-        let r = Math.sqrt(a * a + b * b);
-        drawPlanet(p1[0], p1[1], r);
+        mousedown = false;
     })
 
 
@@ -264,8 +274,8 @@ function main(shaders) {
         gl.uniform1f(uMaxSpeed, uniStatus.maxSpeed);
         const uStartPoint = gl.getUniformLocation(updateProgram, "uStartPoint");
         gl.uniform2fv(uStartPoint, uniStatus.startPos);
-        const uUseStartPoint = gl.getUniformLocation(updateProgram, "uUseStartPoint");
-        gl.uniform1f(uUseStartPoint, 0.);
+        //const uUseStartPoint = gl.getUniformLocation(updateProgram, "uUseStartPoint");
+        //gl.uniform1f(uUseStartPoint, 0.);
         const uMinLife = gl.getUniformLocation(updateProgram, "uMinLife");
         gl.uniform1f(uMinLife, uniStatus.currMinLife);
         const uMaxLife = gl.getUniformLocation(updateProgram, "uMinLife");

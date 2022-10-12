@@ -19,7 +19,7 @@ uniform float uMaxSpeed;
 uniform float uMinLife;
 uniform float uMaxLife;
 uniform float uSourceAngle;
-uniform bool uUseStartPoint;
+//uniform bool uUseStartPoint;
 /* Inputs. These reflect the state of a single particle before the update. */
 
 
@@ -55,19 +55,19 @@ vec2 force(){
          float m = 4. * PI * pow(uRadius[i] * RE,3.)/3. * rho;
          float f = G * m/pow(length(uPosition[i]- pos)*RE,2.);
          
-        if(length(uPosition[i]- pos)<uRadius[i]*1.5){
+        /*if(length(uPosition[i]- pos)<uRadius[i]*1.5){
            //d = vec2(vPosition.x, vPosition.y);
            /* float x = -uRadius[i]*RE* pow(2.*PI*uDeltaTime,2.)*cos(2.*PI*uDeltaTime*uDeltaTime);
             float y = uRadius[i]*RE* pow(2.*PI*uDeltaTime,2.)*sin(2.*PI*uDeltaTime*uDeltaTime);
             d = vec2(x,y);
           d = vec2(cos(d.x), sin(d.x));
-            d = vec2(x, y);*/
+            d = vec2(x, y);
 
 
             vec2 d2 = vec2(d.y, -d.x);
             force += 2.*f * d2;
             force -= 2.*f*d;
-         }else
+         }else*/
             force += f * d ;
          
 
@@ -112,21 +112,21 @@ void main() {
       float y = sin(angle-PI/2.-uSourceAngle);
       vAgeOut = .0;
       vLifeOut = uMinLife + rand(vec2(vPosition.x, vLife))*(uMaxLife - uMinLife);;
-      if(uUseStartPoint){
-         vPositionOut = uStartPoint;
-         vVelocityOut = vec2(x, y ) * rand(vec2(vPosition.y, uMaxSpeed))*(uMaxSpeed);
-         if(isInsidePlanet){
-            vVelocityOut = vVelocity;
-            vLifeOut = vLife;
-         }
-      }else{
+     // if(uUseStartPoint){
+      vPositionOut = uStartPoint;
+      vVelocityOut = vec2(x, y ) * rand(vec2(vPosition.y, uMaxSpeed))*(uMaxSpeed);
+     /* if(isInsidePlanet){
+         vVelocityOut = vVelocity;
+         vLifeOut = vLife;
+      }
+     }else{
          vPositionOut = vPosition;
          if(isInsidePlanet){
             vPositionOut = 1.+vec2(rand(vec2(x,y)),rand(vec2(x,y)));
             vVelocityOut = vVelocity;
             vLifeOut = vLife;
          }
-      }
+      }*/
 
    }
 

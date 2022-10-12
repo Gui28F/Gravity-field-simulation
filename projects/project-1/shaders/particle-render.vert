@@ -13,6 +13,6 @@ uniform vec2 uScale;
 void main() {
   vAgeOut = vAge;
   vLifeOut = vLife;
-  gl_PointSize = 2.5;
+  gl_PointSize = 1.5;
   gl_Position = vec4(vPosition/uScale, 0.0, 1.0);
 }
