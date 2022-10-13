@@ -89,12 +89,12 @@ function main(shaders) {
 
                 break;
             case "ArrowLeft":
-                uniStatus.sourceAngle = Math.round((uniStatus.sourceAngle + 0.1) * 10) / 10;
-                gl.uniform1f(uSourceAngle, Math.round((uniStatus.sourceAngle + 0.1) * 10) / 10);
-                break;
-            case "ArrowRight":
                 uniStatus.sourceAngle = Math.round((uniStatus.sourceAngle - 0.1) * 10) / 10;
                 gl.uniform1f(uSourceAngle, Math.round((uniStatus.sourceAngle - 0.1) * 10) / 10);
+                break;
+            case "ArrowRight":
+                uniStatus.sourceAngle = Math.round((uniStatus.sourceAngle + 0.1) * 10) / 10;
+                gl.uniform1f(uSourceAngle, Math.round((uniStatus.sourceAngle + 0.1) * 10) / 10);
                 break;
             case 'q':
                 if (uniStatus.currMinLife + 1 < uniStatus.currMaxLife &&
