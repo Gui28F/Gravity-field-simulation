@@ -42,19 +42,12 @@ vec3 color(){
 float opacity(){
     vec2 f = force();
     float mf = clamp(length(f), 0.0, 1.0);
-   // float o = step(mod(cos(length(f))/length(f)  ,1.),.75);
-   // float o = step(mod(2.*log(length(f)),1.),.85);
-   float o = step(mod(2.303 * log(length(f)),1.),.85);
-  // if(clamp(length(f), 0.0, 1.0) >1.)
-      // return  mf*step(mod(1./(length(f)+0.5),1.),.85);
+    float o = step(mod(2.303 * log(length(f)),1.),.85);
     return o*mf;
 }
 
 
 void main()
 {
-    
-
-    gl_FragColor = vec4(color(), opacity());
-    
+    gl_FragColor = vec4(color(), opacity());   
 }

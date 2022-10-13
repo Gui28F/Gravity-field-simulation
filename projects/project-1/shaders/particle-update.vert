@@ -19,7 +19,6 @@ uniform float uMaxSpeed;
 uniform float uMinLife;
 uniform float uMaxLife;
 uniform float uSourceAngle;
-//uniform bool uUseStartPoint;
 /* Inputs. These reflect the state of a single particle before the update. */
 
 
@@ -54,23 +53,7 @@ vec2 force(){
          vec2 d = normalize(uPosition[i] - pos);
          float m = 4. * PI * pow(uRadius[i] * RE,3.)/3. * rho;
          float f = G * m/pow(length(uPosition[i]- pos)*RE,2.);
-         
-        /*if(length(uPosition[i]- pos)<uRadius[i]*1.5){
-           //d = vec2(vPosition.x, vPosition.y);
-           /* float x = -uRadius[i]*RE* pow(2.*PI*uDeltaTime,2.)*cos(2.*PI*uDeltaTime*uDeltaTime);
-            float y = uRadius[i]*RE* pow(2.*PI*uDeltaTime,2.)*sin(2.*PI*uDeltaTime*uDeltaTime);
-            d = vec2(x,y);
-          d = vec2(cos(d.x), sin(d.x));
-            d = vec2(x, y);
-
-
-            vec2 d2 = vec2(d.y, -d.x);
-            force += 2.*f * d2;
-            force -= 2.*f*d;
-         }else*/
-            force += f * d ;
-         
-
+         force += f * d ;
       }
    }
     return force;
@@ -94,40 +77,19 @@ void main() {
    vec2 accel = force();
    vVelocityOut = vVelocity + accel * uDeltaTime;
    vAgeOut = vAge + uDeltaTime;
-     /* float angle = acos(length(accel));
-      float x = cos(angle)*vPosition.x - sin(angle)*vPosition.y;
-      float y = sin(angle)*vPosition.x + cos(angle)*vPosition.y;
-      
-      vVelocityOut = vVelocity - accel + accel*vec2(x,y) * uDeltaTime;
-   }*/
    if(isInsidePlanet){
-      vAgeOut =vLife-0.1;
       vPositionOut = uStartPoint;
-   }
-   
-   if (vAgeOut >= vLife ) {
-      // It's all up to you!
-      float angle = rand(vec2(sin(vPosition.x), vLife))*(uMaxAngle - uMinAngle);
-      float x = cos(angle-uSourceAngle-PI);
-      float y = sin(angle-uSourceAngle-PI);
-      vAgeOut = .0;
-      vLifeOut = uMinLife + rand(vec2(vPosition.x, vLife))*(uMaxLife - uMinLife);;
-     // if(uUseStartPoint){
-      vPositionOut = uStartPoint;
-      vVelocityOut = vec2(x, y) * rand(vec2(vLife, uMaxSpeed))*(uMaxSpeed);
-     
-     
-     /*}else{
-         vPositionOut = uStartPoint;
-         if(isInsidePlanet){
-            //vPositionOut = 1.+vec2(rand(vec2(x,y)),rand(vec2(x,y)));
-            vVelocityOut = vVelocity;
-            vLifeOut = vLife;
-         }
-     // }*/
-
    }
    if(length(vVelocityOut)>uMaxSpeed)
       vVelocityOut = vVelocity;
+   if (vAgeOut >= vLife ) {
+      float angle = uMinAngle + rand(vec2(vPosition.x*uDeltaTime*uDeltaTime, vLife))*(uMaxAngle - uMinAngle);
+      float x = cos(angle-uSourceAngle);
+      float y = sin(angle-uSourceAngle);
+      vAgeOut = .0;
+      vLifeOut = uMinLife + rand(vec2(vPosition.x*uDeltaTime, vLife))*(uMaxLife - uMinLife);
+      vPositionOut = uStartPoint;
+      vVelocityOut = vec2(x, y) * (uMinSpeed + rand(vec2(vLife, uMaxSpeed*uDeltaTime))*(uMaxSpeed-uMinSpeed));
+   }
 
 }

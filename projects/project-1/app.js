@@ -22,8 +22,8 @@ let uniStatus = {
     currVMin: 0.1, vMin: 0.1,
     currVMax: 0.2, vMax: 0.2,
     sourceAngle: 0.0,
-    currMaxAngle: 2 * Math.PI, varAngle: [0, 2 * Math.PI],
-    currMinAngle: 0.0, minSpeed: 0.1, maxSpeed: 0.2
+    currMaxAngle: Math.PI, varAngle: [-Math.PI, Math.PI],
+    currMinAngle: -Math.PI, minSpeed: 0.1, maxSpeed: 0.2
 };
 
 
@@ -61,8 +61,6 @@ function main(shaders) {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         gl.viewport(0, 0, canvas.width, canvas.height);
-        //  const uScale = gl.getUniformLocation(renderProgram, "uScale");
-        //gl.uniform2fv(uScale, vec2(1.5, 1.5 * canvas.height / canvas.width));
     });
 
 
@@ -131,13 +129,10 @@ function main(shaders) {
                 window.addEventListener("mousemove", function (event) {
                     if (event.shiftKey) {
                         gl.useProgram(updateProgram)
-                        //const uUseStartPoint = gl.getUniformLocation(updateProgram, "uUseStartPoint");
-                        // gl.uniform1f(uUseStartPoint, 1.);
                         const p = getCursorPosition(canvas, event);
                         gl.useProgram(updateProgram);
                         gl.uniform2f(uStartPoint, p[0], p[1]);
                     }
-                    //console.log(p);
                 });
                 break;
             case "PageUp":
@@ -213,17 +208,15 @@ function main(shaders) {
 
     window.requestAnimationFrame(animate);
     let planets = [];
-    /*function isInsidePlanet(x, y, radius) {
+    function isInsidePlanet(x, y) {
         let i;
         for (i = 0; i < planets.length; i++) {
             if (Math.pow(x - planets[i][0], 2.) + Math.pow(y - planets[i][1], 2.) < Math.pow(planets[i][2], 2.))
                 return true;
-            if (Math.pow(x - planets[i][0], 2.) + Math.pow(y - planets[i][1], 2.) < Math.pow(radius, 2.))
-                return true;
         }
         return false;
 
-    }*/
+    }
 
     function buildQuad() {
         const vertices = [-1.0, 1.0, -1.0, -1.0, 1.0, -1.0,
@@ -279,8 +272,6 @@ function main(shaders) {
         gl.uniform1f(uMaxSpeed, uniStatus.maxSpeed);
         const uStartPoint = gl.getUniformLocation(updateProgram, "uStartPoint");
         gl.uniform2fv(uStartPoint, uniStatus.startPos);
-        //const uUseStartPoint = gl.getUniformLocation(updateProgram, "uUseStartPoint");
-        //gl.uniform1f(uUseStartPoint, 0.);
         const uMinLife = gl.getUniformLocation(updateProgram, "uMinLife");
         gl.uniform1f(uMinLife, uniStatus.currMinLife);
         const uMaxLife = gl.getUniformLocation(updateProgram, "uMinLife");
@@ -289,18 +280,14 @@ function main(shaders) {
     function drawPlanet(x, y, radius) {
         if (planets.length >= MAX_PLANETS)
             alert('Can not put more planets')
-        // else if (isInsidePlanet(x, y, radius))
-        //  alert('Can not put planets inside planets')
         else
             planets.push(vec3(x, y, radius))
     }
 
 
     function animate(timestamp) {
-
-
         let deltaTime = 0;
-
+        console.log(planets.length)
         if (time === undefined) {        // First time
             time = timestamp / 1000;
             deltaTime = 0;
@@ -311,7 +298,6 @@ function main(shaders) {
         }
         if (deltaTime > 0.05)
             deltaTime = 0;
-
         window.requestAnimationFrame(animate);
 
         // Clear framebuffer
