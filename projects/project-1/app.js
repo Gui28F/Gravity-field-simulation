@@ -143,7 +143,7 @@ function main(shaders) {
                 break;
             case "PageDown":
                 if (event.shiftKey) {
-                    if (uniStatus.currVMin - 0.1 >= 0) {
+                    if (uniStatus.currVMin - 0.1 >= 0.1) {
                         uniStatus.currVMin = Math.round((uniStatus.currVMin - 0.1) * 10) / 10;;
                         gl.uniform1f(uMinSpeed, Math.round(uniStatus.currVMin * 10) / 10);
                     }
@@ -153,6 +153,7 @@ function main(shaders) {
                         uniStatus.currVMax = Math.round((uniStatus.currVMax - 0.1) * 10) / 10;
                         gl.uniform1f(uMaxSpeed, Math.round(uniStatus.currVMax * 10) / 10);
                     }
+                    
                 }
                 break;
         }
