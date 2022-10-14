@@ -69,31 +69,28 @@ bool intersectedPlanet(vec2 pos){
 
 void main() {
    bool isInsidePlanet = intersectedPlanet(vPosition);
-   if(isInsidePlanet && vAge == 0. ){
+   if(isInsidePlanet && vAge == 0.){
       vPositionOut = uStartPoint;
       vAgeOut = vAge;
       vVelocityOut = vVelocity;
       vLifeOut = vLife;
-      return;
-   }
+   }else{
 
-   vec2 accel = force();
-    /* Update parameters according to our simple rules.*/
-   vPositionOut = vPosition + vVelocity * uDeltaTime;
-   vLifeOut = vLife;
-   vVelocityOut = vVelocity + accel * uDeltaTime;
-   vAgeOut = vAge + uDeltaTime;
-   
-   if(length(vVelocityOut) > uMaxSpeed)
-      vVelocityOut = vVelocity;
-   if (vAgeOut >= vLife || isInsidePlanet) {
-      float angle = -uSourceAngle - uBeta + rand(vec2(exp(vLife+vPositionOut.y), vLife))*(2.0*uBeta);
-      float x = cos(angle);
-      float y = sin(angle);
-      vAgeOut = .0;
-      vLifeOut = uMinLife + rand(vec2(vLifeOut*uDeltaTime, vLife))*(uMaxLife - uMinLife);
-      vPositionOut = uStartPoint;
-      vVelocityOut = vec2(x, y) * (uMinSpeed + rand(vec2(vLife, uDeltaTime*uDeltaTime))*(uMaxSpeed-uMinSpeed));
+      vec2 accel = force();
+      /* Update parameters according to our simple rules.*/
+      vPositionOut = vPosition + vVelocity * uDeltaTime;
+      vLifeOut = vLife;
+      vVelocityOut = vVelocity + accel * uDeltaTime;
+      vAgeOut = vAge + uDeltaTime; 
+      if (vAgeOut >= vLife || isInsidePlanet) {
+         float angle = -uSourceAngle - uBeta + rand(vec2(exp(vLife+vPositionOut.y), vLife))*(2.0*uBeta);
+         float x = cos(angle);
+         float y = sin(angle);
+         vAgeOut = .0;
+         vLifeOut = uMinLife + rand(vec2(vLifeOut*uDeltaTime, vLife))*(uMaxLife - uMinLife);
+         vPositionOut = uStartPoint;
+         vVelocityOut = vec2(x, y) * (uMinSpeed + rand(vec2(vLife, uDeltaTime*uDeltaTime))*(uMaxSpeed-uMinSpeed));
+      }
+      
    }
-
 }
