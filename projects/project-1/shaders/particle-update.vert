@@ -18,9 +18,8 @@ uniform float uMaxSpeed;
 uniform float uMinLife;
 uniform float uMaxLife;
 uniform float uSourceAngle;
+
 /* Inputs. These reflect the state of a single particle before the update. */
-
-
 attribute vec2 vPosition;              // actual position
 attribute float vAge;                  // actual age (in seconds)
 attribute float vLife;                 // when it is supposed to dye 
@@ -43,7 +42,7 @@ highp float rand(vec2 co)
     return fract(sin(sn) * c);
 }
 
-
+// Calculates the force applied by all the planets. 
 vec2 force(){
    vec2 force = vec2(0.,0.);
    vec2 pos = vPosition.xy;
@@ -58,6 +57,7 @@ vec2 force(){
     return force;
 }
 
+/* Checks if the argument particle intercepts any planets. Returns true if it intersects or false otherwise */
 bool intersectedPlanet(vec2 pos){
    for(int i = 0; i < MAX_PLANETS; i++){
       vec2 uPos = uPosition[i];
