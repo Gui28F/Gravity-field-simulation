@@ -8,6 +8,7 @@ let inParticlesBuffer, outParticlesBuffer, quadBuffer, newLife;
 
 // Total number of particles
 const N_PARTICLES = 100000;
+// Maximum number of planets
 const MAX_PLANETS = 10;
 let drawPoints = true;
 let drawField = true;
