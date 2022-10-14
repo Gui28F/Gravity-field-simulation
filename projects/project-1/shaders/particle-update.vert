@@ -87,7 +87,7 @@ void main() {
    if(length(vVelocityOut) > uMaxSpeed)
       vVelocityOut = vVelocity;
    if (vAgeOut >= vLife || isInsidePlanet) {
-      float angle = uSourceAngle - uBeta + rand(vec2(exp(vLife+vPositionOut.y), vLife))*(2.0*uBeta);
+      float angle = -uSourceAngle - uBeta + rand(vec2(exp(vLife+vPositionOut.y), vLife))*(2.0*uBeta);
       float x = cos(angle);
       float y = sin(angle);
       vAgeOut = .0;
