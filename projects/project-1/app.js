@@ -8,6 +8,7 @@ let inParticlesBuffer, outParticlesBuffer, quadBuffer, newLife;
 
 // Total number of particles
 const N_PARTICLES = 100000;
+// Maximum number of planets
 const MAX_PLANETS = 10;
 let drawPoints = true;
 let drawField = true;
@@ -22,8 +23,8 @@ let uniStatus = {
     currVMin: 0.1, vMin: 0.1,
     currVMax: 0.2, vMax: 0.2,
     sourceAngle: 0.0,
-    currMaxAngle: Math.PI, varAngle: [-Math.PI, Math.PI],
-    currMinAngle: -Math.PI, minSpeed: 0.1, maxSpeed: 0.2
+    betaAngle: Math.PI, varAngle: [-Math.PI, Math.PI],
+    minSpeed: 0.1, maxSpeed: 0.2
 };
 
 
@@ -75,15 +76,15 @@ function main(shaders) {
 
         switch (event.key) {
             case "ArrowUp":
-                if (uniStatus.varAngle[1] > uniStatus.currMaxAngle) {
-                    uniStatus.currMaxAngle += Math.PI / 16;
-                    gl.uniform1f(uBeta, uniStatus.currMaxAngle);
+                if (uniStatus.varAngle[1] > uniStatus.betaAngle) {
+                    uniStatus.betaAngle += Math.PI / 16;
+                    gl.uniform1f(uBeta, uniStatus.betaAngle);
                 }
                 break;
             case "ArrowDown":
-                if (uniStatus.varAngle[0] < uniStatus.currMaxAngle) {
-                    uniStatus.currMaxAngle -= Math.PI / 16;
-                    gl.uniform1f(uBeta, uniStatus.currMaxAngle);
+                if (uniStatus.varAngle[0] < uniStatus.betaAngle) {
+                    uniStatus.betaAngle -= Math.PI / 16;
+                    gl.uniform1f(uBeta, uniStatus.betaAngle);
                 }
 
                 break;
@@ -143,7 +144,7 @@ function main(shaders) {
                 break;
             case "PageDown":
                 if (event.shiftKey) {
-                    if (uniStatus.currVMin - 0.1 >= 0) {
+                    if (uniStatus.currVMin - 0.1 >= 0.1) {
                         uniStatus.currVMin = Math.round((uniStatus.currVMin - 0.1) * 10) / 10;;
                         gl.uniform1f(uMinSpeed, Math.round(uniStatus.currVMin * 10) / 10);
                     }
@@ -153,6 +154,7 @@ function main(shaders) {
                         uniStatus.currVMax = Math.round((uniStatus.currVMax - 0.1) * 10) / 10;
                         gl.uniform1f(uMaxSpeed, Math.round(uniStatus.currVMax * 10) / 10);
                     }
+                    
                 }
                 break;
         }
@@ -249,7 +251,7 @@ function main(shaders) {
         const uSourceAngle = gl.getUniformLocation(updateProgram, "uSourceAngle");
         gl.uniform1f(uSourceAngle, uniStatus.sourceAngle);
         const uBeta = gl.getUniformLocation(updateProgram, "uBeta");
-        gl.uniform1f(uBeta, uniStatus.currMaxAngle);
+        gl.uniform1f(uBeta, uniStatus.betaAngle);
         const uMinSpeed = gl.getUniformLocation(updateProgram, "uMinSpeed");
         gl.uniform1f(uMinSpeed, uniStatus.minSpeed);
         const uMaxSpeed = gl.getUniformLocation(updateProgram, "uMaxSpeed");
