@@ -12,8 +12,7 @@ uniform vec2 uPosition[MAX_PLANETS];
    update step. */
 uniform float uDeltaTime;
 uniform vec2 uStartPoint;
-uniform float uMinAngle;
-uniform float uMaxAngle;
+uniform float uBeta;
 uniform float uMinSpeed;
 uniform float uMaxSpeed;
 uniform float uMinLife;
@@ -80,10 +79,11 @@ void main() {
    if(isInsidePlanet){
       vPositionOut = uStartPoint;
    }
-   if(length(vVelocityOut)>uMaxSpeed)
+   if(length(vVelocityOut) > uMaxSpeed)
       vVelocityOut = vVelocity;
    if (vAgeOut >= vLife ) {
-      float angle = uMinAngle + rand(vec2(vPosition.x*uDeltaTime*uDeltaTime, vLife))*(uMaxAngle - uMinAngle);
+      //float angle = uMinAngle + rand(vec2(vPosition.x*uDeltaTime*uDeltaTime, vLife))*(uMaxAngle - uMinAngle);
+      float angle = uSourceAngle - uBeta + rand(vec2(vPosition.x*uDeltaTime*uDeltaTime, vLife))*(2.0*uBeta);
       float x = cos(angle-uSourceAngle);
       float y = sin(angle-uSourceAngle);
       vAgeOut = .0;
