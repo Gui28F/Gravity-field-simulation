@@ -42,7 +42,7 @@ highp float rand(vec2 co)
     return fract(sin(sn) * c);
 }
 
-// Calculates the force applied by all the planets. 
+/* Calculates the force applied by all the planets. */
 vec2 force(){
    vec2 force = vec2(0.,0.);
    vec2 pos = vPosition.xy;
