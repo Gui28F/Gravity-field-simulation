@@ -48,7 +48,7 @@ vec2 force(){
    vec2 force = vec2(0.,0.);
    vec2 pos = vPosition.xy;
    for(int i = 0; i < MAX_PLANETS; i++){
-      if(uRadius[i] != 0. ){
+      if(uRadius[i] > 0. ){
          vec2 d = normalize(uPosition[i] - pos);
          float m = 4. * PI * pow(uRadius[i] * RE,3.)/3. * rho;
          float f = G * m/pow(length(uPosition[i]- pos)*RE,2.);
@@ -68,28 +68,32 @@ bool intersectedPlanet(vec2 pos){
 }
 
 void main() {
+   bool isInsidePlanet = intersectedPlanet(vPosition);
+   if(isInsidePlanet && vAge == 0. ){
+      vPositionOut = uStartPoint;
+      vAgeOut = vAge;
+      vVelocityOut = vVelocity;
+      vLifeOut = vLife;
+      return;
+   }
 
+   vec2 accel = force();
     /* Update parameters according to our simple rules.*/
    vPositionOut = vPosition + vVelocity * uDeltaTime;
    vLifeOut = vLife;
-   bool isInsidePlanet = intersectedPlanet(vPositionOut);
-   vec2 accel = force();
    vVelocityOut = vVelocity + accel * uDeltaTime;
    vAgeOut = vAge + uDeltaTime;
-   if(isInsidePlanet){
-      vPositionOut = uStartPoint;
-   }
+   
    if(length(vVelocityOut) > uMaxSpeed)
       vVelocityOut = vVelocity;
-   if (vAgeOut >= vLife ) {
-      //float angle = uMinAngle + rand(vec2(vPosition.x*uDeltaTime*uDeltaTime, vLife))*(uMaxAngle - uMinAngle);
-      float angle = uSourceAngle - uBeta + rand(vec2(vPosition.x*uDeltaTime*uDeltaTime, vLife))*(2.0*uBeta);
-      float x = cos(angle-uSourceAngle);
-      float y = sin(angle-uSourceAngle);
+   if (vAgeOut >= vLife || isInsidePlanet) {
+      float angle = uSourceAngle - uBeta + rand(vec2(exp(vLife+vPositionOut.y), vLife))*(2.0*uBeta);
+      float x = cos(angle);
+      float y = sin(angle);
       vAgeOut = .0;
-      vLifeOut = uMinLife + rand(vec2(vPosition.x*uDeltaTime, vLife))*(uMaxLife - uMinLife);
+      vLifeOut = uMinLife + rand(vec2(vLifeOut*uDeltaTime, vLife))*(uMaxLife - uMinLife);
       vPositionOut = uStartPoint;
-      vVelocityOut = vec2(x, y) * (uMinSpeed + rand(vec2(vLife, uMaxSpeed*uDeltaTime))*(uMaxSpeed-uMinSpeed));
+      vVelocityOut = vec2(x, y) * (uMinSpeed + rand(vec2(vLife, uDeltaTime*uDeltaTime))*(uMaxSpeed-uMinSpeed));
    }
 
 }
