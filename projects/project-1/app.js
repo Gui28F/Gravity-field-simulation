@@ -248,8 +248,6 @@ function main(shaders) {
 
         const uSourceAngle = gl.getUniformLocation(updateProgram, "uSourceAngle");
         gl.uniform1f(uSourceAngle, uniStatus.sourceAngle);
-        const uMinAngle = gl.getUniformLocation(updateProgram, "uMinAngle");
-        gl.uniform1f(uMinAngle, uniStatus.currMinAngle);
         const uBeta = gl.getUniformLocation(updateProgram, "uBeta");
         gl.uniform1f(uBeta, uniStatus.currMaxAngle);
         const uMinSpeed = gl.getUniformLocation(updateProgram, "uMinSpeed");
