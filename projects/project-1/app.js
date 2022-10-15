@@ -26,7 +26,7 @@ let uniStatus = {
     betaAngle: Math.PI, varAngle: [-Math.PI, Math.PI],
     minSpeed: 0.1, maxSpeed: 0.2
 };
-
+let planets = [];
 
 
 function main(shaders) {
@@ -76,7 +76,7 @@ function main(shaders) {
 
         switch (event.key) {
             case "ArrowUp":
-                if (uniStatus.varAngle[1] >= uniStatus.betaAngle + Math.PI / 16) {
+                if (uniStatus.varAngle[1] > uniStatus.betaAngle + Math.PI / 16) {
                     uniStatus.betaAngle += Math.PI / 16;
                     gl.uniform1f(uBeta, uniStatus.betaAngle);
                 } else
@@ -197,16 +197,6 @@ function main(shaders) {
     }
 
     window.requestAnimationFrame(animate);
-    let planets = [];
-    function isInsidePlanet(x, y) {
-        let i;
-        for (i = 0; i < planets.length; i++) {
-            if (Math.pow(x - planets[i][0], 2.) + Math.pow(y - planets[i][1], 2.) < Math.pow(planets[i][2], 2.))
-                return true;
-        }
-        return false;
-
-    }
 
     function buildQuad() {
         const vertices = [-1.0, 1.0, -1.0, -1.0, 1.0, -1.0,
