@@ -213,10 +213,11 @@ function main(shaders) {
 
         for (let i = 0; i < nParticles; ++i) {
             //position
-            const x = Math.random() * (1.5 - -1.5 + 1) - 1.5;
-            const y = Math.random() * (1.5 - -1.5 + 1) - 1.5;
+            const x = Math.random() * (1 - -1) - 1;
+            const y = Math.random() * (1 - -1) - 1;
+        
 
-            data.push(x, y)
+            data.push(x * 1.5, y * 1.5*canvas.height / canvas.width)
             // age
             data.push(0.0);
 
