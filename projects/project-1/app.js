@@ -273,18 +273,14 @@ function main(shaders) {
             deltaTime = timestamp / 1000 - time;
             time = timestamp / 1000;
         }
-        if (deltaTime > 0.05)
-            deltaTime = 0;
+
         window.requestAnimationFrame(animate);
 
         // Clear framebuffer
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.useProgram(updateProgram);
-
-
         if (drawField)
             drawQuad();
-
         updateParticles(deltaTime);
         if (drawPoints) drawParticles(outParticlesBuffer, N_PARTICLES);
         swapParticlesBuffers();
