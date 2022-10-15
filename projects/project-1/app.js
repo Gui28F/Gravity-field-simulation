@@ -215,9 +215,9 @@ function main(shaders) {
             //position
             const x = Math.random() * (1 - -1) - 1;
             const y = Math.random() * (1 - -1) - 1;
-        
 
-            data.push(x * 1.5, y * 1.5*canvas.height / canvas.width)
+
+            data.push(x * 1.5, y * 1.5 * canvas.height / canvas.width)
             // age
             data.push(0.0);
 
@@ -257,9 +257,10 @@ function main(shaders) {
         gl.uniform1f(uMaxLife, uniStatus.currMaxLife);
     }
     function drawPlanet(x, y, radius) {
-        if (planets.length >= MAX_PLANETS)
+        if (planets.length >= MAX_PLANETS) {
             alert('Can not put more planets')
-        else
+            mousedown = false;
+        } else
             planets.push(vec3(x, y, radius))
     }
 
