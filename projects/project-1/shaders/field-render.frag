@@ -18,11 +18,15 @@ varying vec2 worldPos;
 vec2 force(){
    vec2 force = vec2(0.,0.);
    for(int i = 0; i < MAX_PLANETS; i++){
+        float radius = uRadius[i];
         if(uRadius[i] != 0.){
             vec2 pos = worldPos;
+            float dist = length(uPosition[i]- pos);
+            if( dist < radius)
+                radius = dist;
             vec2 d = normalize(uPosition[i]- pos);
-            float m = 4. * PI * pow(uRadius[i]* RE,3.)/3. * rho;
-            float f = G * m/pow(length(uPosition[i]- pos)*RE,2.);
+            float m = 4. * PI * pow(radius* RE,3.)/3. * rho;
+            float f = G * m/pow(dist*RE,2.);
             force += f * d;
         }
    }

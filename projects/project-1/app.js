@@ -76,17 +76,19 @@ function main(shaders) {
 
         switch (event.key) {
             case "ArrowUp":
-                if (uniStatus.varAngle[1] > uniStatus.betaAngle) {
+                if (uniStatus.varAngle[1] >= uniStatus.betaAngle + Math.PI / 16) {
                     uniStatus.betaAngle += Math.PI / 16;
                     gl.uniform1f(uBeta, uniStatus.betaAngle);
-                }
+                } else
+                    gl.uniform1f(uBeta, uniStatus.betaAngle);
                 break;
             case "ArrowDown":
-                if (uniStatus.varAngle[0] < uniStatus.betaAngle) {
+                if (uniStatus.varAngle[0] <= uniStatus.betaAngle - Math.PI / 16) {
                     uniStatus.betaAngle -= Math.PI / 16;
-                    gl.uniform1f(uBeta, uniStatus.betaAngle);
-                }
 
+                    gl.uniform1f(uBeta, uniStatus.betaAngle);
+                } else
+                    gl.uniform1f(uBeta, uniStatus.varAngle[0])
                 break;
             case "ArrowLeft":
                 uniStatus.sourceAngle = Math.round((uniStatus.sourceAngle - 0.1) * 10) / 10;
@@ -131,7 +133,7 @@ function main(shaders) {
                 });
                 break;
             case "PageUp":
-                if (event.shiftKey) {        
+                if (event.shiftKey) {
                     if (uniStatus.currVMin + 0.1 <= uniStatus.currVMax) {
                         uniStatus.currVMin = Math.round((uniStatus.currVMin + 0.1) * 10) / 10;;
                         gl.uniform1f(uMinSpeed, Math.round((uniStatus.currVMin + 0.1) * 10) / 10);
@@ -154,7 +156,7 @@ function main(shaders) {
                         uniStatus.currVMax = Math.round((uniStatus.currVMax - 0.1) * 10) / 10;
                         gl.uniform1f(uMaxSpeed, Math.round(uniStatus.currVMax * 10) / 10);
                     }
-                    
+
                 }
                 break;
         }
