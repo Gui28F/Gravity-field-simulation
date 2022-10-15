@@ -23,7 +23,7 @@ let uniStatus = {
     currVMin: 0.1, vMin: 0.1,
     currVMax: 0.2, vMax: 0.2,
     sourceAngle: 0.0,
-    betaAngle: Math.PI, varAngle: [-Math.PI, Math.PI],
+    betaAngle: Math.PI, varAngle: [0, Math.PI],
     minSpeed: 0.1, maxSpeed: 0.2
 };
 let planets = [];
@@ -76,7 +76,7 @@ function main(shaders) {
 
         switch (event.key) {
             case "ArrowUp":
-                if (uniStatus.varAngle[1] > uniStatus.betaAngle + Math.PI / 16) {
+                if (uniStatus.varAngle[1] >= uniStatus.betaAngle + Math.PI / 16) {
                     uniStatus.betaAngle += Math.PI / 16;
                     gl.uniform1f(uBeta, uniStatus.betaAngle);
                 } else
@@ -274,6 +274,8 @@ function main(shaders) {
             time = timestamp / 1000;
         }
 
+        if (deltaTime > 0.05)
+            deltaTime = 0;
         window.requestAnimationFrame(animate);
 
         // Clear framebuffer
