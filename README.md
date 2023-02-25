@@ -4,7 +4,7 @@ In this work we simulate the movement of a large number of small masses, which w
 To simulate the movement of a particle it will be necessary to calculate the total force caused by all the planets, in the place where the particle is located. Then, determining its acceleration, its position will be updated at each interval of the simulation.
 In short, the program will be interactive and should allow the user to control the placement of particles and the placement of planets.
 
-Demo: https://gui28f.github.io/Projeto1-CGI/projects/project-1/
+Demo: https://gui28f.github.io/Gravity-field-simulation/projects/project-1/
 |  | Interval | Initial value| Control |
 | --- | --- | --- | --- |																																													
 | Minimum value for particle lifetime | [1,19] | 2	| 'q' - increase 'a' - decrease |
