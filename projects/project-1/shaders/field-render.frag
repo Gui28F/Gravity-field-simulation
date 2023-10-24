@@ -22,10 +22,10 @@ vec2 force(){
         if(radius != 0.){
             vec2 pos = worldPos;
             float dist = length(uPosition[i]- pos);
-            vec2 d = normalize(uPosition[i]- pos);
+            vec2 dir = normalize(uPosition[i]- pos);
             float m = 4. * PI * pow(radius* RE,3.)/3. * rho;
             float f = G * m/pow(dist*RE,2.);
-            force += f * d;
+            force += f * dir;
         }
    }
     return force;
@@ -41,16 +41,16 @@ vec3 hsv2rgb(vec3 c)
 // chooses a color based on the force exerted
 vec3 color(){
     vec2 f = force();
-    float dir = atan(f.y, f.x)/6.3;
+    float dir = atan(f.y, f.x)/(2.*PI);
     return hsv2rgb(vec3 (dir,1.,1.));
 }
 
 
 float opacity(){
     vec2 f = force();
-    float mf = clamp(length(f), 0.0, 1.0);
+    float of = clamp(length(f), 0.0, 1.0);
     float o = step(mod(2.303 * log(length(f)),1.),.85);
-    return o*mf;
+    return o*of;
 }
 
 

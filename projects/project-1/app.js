@@ -133,7 +133,9 @@ function main(shaders) {
                 });
                 break;
             case "PageUp":
+                console.log(event)
                 if (event.shiftKey) {
+                    
                     if (uniStatus.currVMin + 0.1 <= uniStatus.currVMax) {
                         uniStatus.currVMin = Math.round((uniStatus.currVMin + 0.1) * 10) / 10;;
                         gl.uniform1f(uMinSpeed, Math.round((uniStatus.currVMin + 0.1) * 10) / 10);

@@ -48,10 +48,10 @@ vec2 force(){
    vec2 pos = vPosition.xy;
    for(int i = 0; i < MAX_PLANETS; i++){
       if(uRadius[i] > 0. ){
-         vec2 d = normalize(uPosition[i] - pos);
+         vec2 dir = normalize(uPosition[i] - pos);
          float m = 4. * PI * pow(uRadius[i] * RE,3.)/3. * rho;
          float f = G * m/pow(length(uPosition[i]- pos)*RE,2.);
-         force += f * d ;
+         force += f * dir ;
       }
    }
     return force;
@@ -83,8 +83,7 @@ void main() {
       vVelocityOut = vVelocity + accel * uDeltaTime;
       vAgeOut = vAge + uDeltaTime; 
    
-      if(length(vVelocityOut)> uMaxSpeed)
-         vVelocityOut = normalize(vVelocity) * uMaxSpeed;
+     
       if (isInsidePlanet || vAgeOut >= vLife ) {
          float angle = (-uSourceAngle - uBeta) + rand(vec2(exp(vLife+vPositionOut.y), vLife))*(2.0*uBeta);
          float x = cos(angle);
@@ -94,6 +93,7 @@ void main() {
          vPositionOut = uStartPoint;
          vVelocityOut = normalize(vec2(x, y)) * (uMinSpeed + rand(vec2(vLife, uDeltaTime*uDeltaTime))*(uMaxSpeed-uMinSpeed));
       }
-
+      if(length(vVelocityOut)> uMaxSpeed)
+         vVelocityOut = normalize(vVelocityOut) * uMaxSpeed;
    }
 }
